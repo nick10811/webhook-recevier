@@ -9,11 +9,14 @@ var bot = linebot({
 });
 
 bot.on('message', function (event) {
-    console.log(`print message from user: ${event.message.text}`);
-
-    var replyMsg = `Hello you just said: "${event.message.text}"`;
+    var userID = event.source.userId;
+    var replyMsg = `Hello "${userID}" just said: "${event.message.text}"`;
     event.reply(replyMsg).then(function (data) {
         // success
+        // push message to user after 5s
+        setTimeout(function() {
+            pushMessage(userID);
+        }, 5000);
     }).catch(function (error) {
         // error
     });
@@ -22,3 +25,8 @@ bot.on('message', function (event) {
 bot.listen('/linewebhook', 3000, function() {
     console.log('linebot is running on port 3000.');
 });
+
+// push notification
+function pushMessage(userID) {
+    bot.push(userID, 'Hello, This is a reminder message.');
+}
