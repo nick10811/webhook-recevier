@@ -63,3 +63,5 @@ app.listen(port, () => {
 // function pushMessage(userID) {
 //     bot.push(userID, 'Hello, This is a reminder message.');
 // }
+
+module.exports.handler = app;
