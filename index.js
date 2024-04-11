@@ -40,22 +40,31 @@ function handleEvent(event) {
         return Promise.resolve(null);
     }
 
-    // extract user ID
-    const userID = event.source.userId;
+    const lineID = event.source.userId;
+    
+    const sentMessage = event.message.text;
+    var replyMessage = '';
 
-    // create an echoing text message
-    const echo = { type: 'text', text: `Hello "${userID}" just said: "${event.message.text}"` };
-    console.log(`"${userID}" just said: "${event.message.text}"`);
+    if (sentMessage === 'book') {
+        const uri = `https://cal.com/nick-l-yang-vkljfs/15min?line-id=${lineID}`;
+        replyMessage = { type: 'text', text: `This is your booking URL: ${encodeURI(uri)}`};
 
-    // send a notification after 5s
-    setTimeout(() => {
-        pushMessage(userID);
-    }, 5000);
+    } else {
+        // create an echoing text message
+        replyMessage = { type: 'text', text: `Hello "${lineID}" just said: "${sentMessage}"` };
+        console.log(`"${lineID}" just said: "${sentMessage}"`);
+
+        // send a notification after 5s
+        setTimeout(() => {
+            pushMessage(lineID);
+        }, 5000);
+
+    }
 
     // use reply API
     return client.replyMessage({
         replyToken: event.replyToken,
-        messages: [echo],
+        messages: [replyMessage],
     });
 }
 
