@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 
+const serverless = require('serverless-http');
 const line = require('@line/bot-sdk');
 const express = require('express');
 
@@ -64,7 +65,8 @@ function handleEvent(event) {
 // }
 
 if (process.env.ENVIRONMENT === 'prod') {
-    module.exports.handler = app;
+    console.log("environment is production");
+    module.exports.handler = serverless(app);
 } else {
     // listen on port
     const port = process.env.PORT || 3000;
