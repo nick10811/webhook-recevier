@@ -38,12 +38,16 @@ function handleEvent(event) {
         return Promise.resolve(null);
     }
 
+    // extract user ID
+    const userID = event.source.userId;
+
     // create an echoing text message
-    const echo = { type: 'text', text: event.message.text };
+    const echo = { type: 'text', text: `Hello "${userID}" just said: "${event.message.text}"` };
+    console.log(`"${userID}" just said: "${event.message.text}"`);
 
     // send a notification after 5s
     // setTimeout(() => {
-    //     pushMessage(event.source.userId);
+    //     pushMessage(userID);
     // }, 5000);
 
     // use reply API
