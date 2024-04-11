@@ -48,9 +48,9 @@ function handleEvent(event) {
     console.log(`"${userID}" just said: "${event.message.text}"`);
 
     // send a notification after 5s
-    // setTimeout(() => {
-    //     pushMessage(userID);
-    // }, 5000);
+    setTimeout(() => {
+        pushMessage(userID);
+    }, 5000);
 
     // use reply API
     return client.replyMessage({
@@ -60,9 +60,12 @@ function handleEvent(event) {
 }
 
 // push notification
-// function pushMessage(userID) {
-//     bot.push(userID, 'Hello, This is a reminder message.');
-// }
+function pushMessage(userID) {
+    client.pushMessage({
+        to: userID,
+        messages: [{ type: 'text', text: 'Hello, This is a reminder message.' }],
+    });
+}
 
 if (process.env.ENVIRONMENT === 'prod') {
     console.log("environment is production");
