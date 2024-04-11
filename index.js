@@ -22,6 +22,7 @@ const app = express();
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 app.post('/linewebhook', line.middleware(config), (req, res) => {
+    console.log(`received a webhook event: ${JSON.stringify(req.body)}`)
     Promise
         .all(req.body.events.map(handleEvent))
         .then((result) => res.json(result))
@@ -57,15 +58,17 @@ function handleEvent(event) {
     });
 }
 
-// listen on port
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`listening on ${port}`);
-});
-
 // push notification
 // function pushMessage(userID) {
 //     bot.push(userID, 'Hello, This is a reminder message.');
 // }
 
-module.exports.handler = app;
+if (process.env.ENVIRONMENT === 'prod') {
+    module.exports.handler = app;
+} else {
+    // listen on port
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`server is listening on ${port}`);
+    });
+}
