@@ -2,18 +2,18 @@
   "name": "webhook-receiver",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon --env-file=.env app.js"
+    "dev": "nodemon --env-file=.env index.js"
   },
   "keywords": [],
   "author": "nick10811@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "@line/bot-sdk": "^9.1.0",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "linebot": "^1.6.1"
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
