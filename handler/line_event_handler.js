@@ -12,7 +12,7 @@ module.exports = function lineEventHandler(event) {
     var replyMessage = '';
 
     if (sentMessage === 'book') {
-        const uri = `https://cal.com/nick-l-yang-vkljfs/15min?line-id=${lineID}`;
+        const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
         replyMessage = { type: 'text', text: `This is your booking URL: ${encodeURI(uri)}` };
 
     } else {
