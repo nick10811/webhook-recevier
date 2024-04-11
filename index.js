@@ -42,9 +42,9 @@ function handleEvent(event) {
     const echo = { type: 'text', text: event.message.text };
 
     // send a notification after 5s
-    setTimeout(() => {
-        pushMessage(event.source.userId);
-    }, 5000);
+    // setTimeout(() => {
+    //     pushMessage(event.source.userId);
+    // }, 5000);
 
     // use reply API
     return client.replyMessage({
@@ -60,6 +60,6 @@ app.listen(port, () => {
 });
 
 // push notification
-function pushMessage(userID) {
-    bot.push(userID, 'Hello, This is a reminder message.');
-}
+// function pushMessage(userID) {
+//     bot.push(userID, 'Hello, This is a reminder message.');
+// }
