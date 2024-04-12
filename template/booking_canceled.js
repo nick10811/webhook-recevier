@@ -57,28 +57,28 @@ module.exports.bookingCanceledTemplate = function bookingCanceledTemplate(obj) {
                                     }
                                 ]
                             },
-                            // {
-                            //     "type": "box",
-                            //     "layout": "vertical",
-                            //     "spacing": "sm",
-                            //     "contents": [
-                            //         {
-                            //             "type": "text",
-                            //             "text": "Time",
-                            //             "color": "#aaaaaa",
-                            //             "size": "sm",
-                            //             "flex": 1
-                            //         },
-                            //         {
-                            //             "type": "text",
-                            //             "text": obj.duration,
-                            //             "wrap": true,
-                            //             "color": "#666666",
-                            //             "size": "sm",
-                            //             "flex": 5
-                            //         }
-                            //     ]
-                            // },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Time",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": obj.duration,
+                                        "wrap": true,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
                             {
                                 "type": "box",
                                 "layout": "vertical",

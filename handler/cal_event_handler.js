@@ -1,6 +1,7 @@
 const { client } = require("../client/line_client");
 const { bookingCreatedTemplate } = require("../template/booking_created");
 const { bookingCanceledTemplate } = require("../template/booking_canceled");
+const moment = require('moment-timezone');
 
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
@@ -60,9 +61,15 @@ function makeBookingObj(payload) {
     return {
         greeting: "Hello " + payload.responses.name.value,
         location: payload.location,
-        // duration: payload.responses.time.value, // TODO: add duration to the booking object
+        duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
         timezone: payload.organizer.timeZone,
         attendee: payload.responses.name.value,
         cancelURI: cancelURI,
     };
+}
+
+function makeDurationString(startTime, endTime, timezone) {
+    const start = moment.utc(startTime).tz(timezone).format('YYYY-MM-DD HH:mm');
+    const end = moment.utc(endTime).tz(timezone).format('HH:mm');
+    return `${start} - ${end}`;
 }
