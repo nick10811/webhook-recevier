@@ -1,5 +1,6 @@
 const { client } = require("../client/line_client");
 const { bookingCreatedTemplate } = require("../template/booking_created");
+const { bookingCanceledTemplate } = require("../template/booking_canceled");
 
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
@@ -37,7 +38,7 @@ function bookingCancelled(payload) {
 
     return client.pushMessage({
         to: lineID,
-        messages: [{ type: 'text', text: 'Your booking has been canceled.' }],
+        messages: [bookingCanceledTemplate(makeBookingObj(payload))],
     });
 }
 
