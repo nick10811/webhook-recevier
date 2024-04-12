@@ -1,0 +1,129 @@
+{
+    "type": "bubble",
+        "body": {
+        "type": "box",
+            "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "Booking Information",
+                        "weight": "bold",
+                        "size": "xl"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "margin": "lg",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Location",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
+                                        "wrap": true,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Time",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "10:00 - 23:00",
+                                        "wrap": true,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Timezone",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Asia/Taipei",
+                                        "wrap": true,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Attendee",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Nick",
+                                        "wrap": true,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+    },
+    "footer": {
+        "type": "box",
+            "layout": "vertical",
+                "spacing": "sm",
+                    "contents": [
+                        {
+                            "type": "button",
+                            "style": "link",
+                            "height": "sm",
+                            "action": {
+                                "type": "uri",
+                                "label": "Cancel",
+                                "uri": "https://linecorp.com"
+                            }
+                        }
+                    ],
+                        "flex": 0
+    }
+}

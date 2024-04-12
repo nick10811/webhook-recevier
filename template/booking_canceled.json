@@ -1,0 +1,37 @@
+{
+    "type": "bubble",
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "Cancel A Booking",
+                "weight": "bold",
+                "size": "xl"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "margin": "lg",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "The booking has been canceled.",
+                                "color": "#aaaaaa",
+                                "size": "sm",
+                                "flex": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
