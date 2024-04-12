@@ -51,3 +51,16 @@ function getLineID(payload) {
     console.log('line id: ' + lineID);
     return lineID;
 }
+
+function makeBookingObj(payload) {
+    const cancelURI = "https://cal.com/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
+
+    return {
+        greeting: "Hello " + payload.responses.name.value,
+        location: payload.location,
+        // duration: payload.responses.time.value, // TODO: add duration to the booking object
+        timezone: payload.organizer.timeZone,
+        attendee: payload.responses.name.value,
+        cancelURI: cancelURI,
+    };
+}
