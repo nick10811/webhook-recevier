@@ -1,4 +1,5 @@
 const { client } = require("../client/line_client");
+const { bookingSystem } = require("../template/booking_system");
 
 module.exports = function lineEventHandler(event) {
     if (event.type !== 'message' || event.message.type !== 'text') {
@@ -13,7 +14,7 @@ module.exports = function lineEventHandler(event) {
 
     if (sentMessage === 'book') {
         const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
-        replyMessage = { type: 'text', text: `This is your booking URL: ${encodeURI(uri)}` };
+        replyMessage = bookingSystem(uri);
 
     } else {
         // create an echoing text message
