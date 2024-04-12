@@ -1,4 +1,5 @@
-const { client } = require('../client/line_client');
+const { client } = require("../client/line_client");
+const { bookingCreatedTemplate } = require("../template/booking_created");
 
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
@@ -23,7 +24,7 @@ function bookingCreated(payload) {
     
     return client.pushMessage({
         to: lineID,
-        messages: [{ type: 'text', text: 'Your booking has been accepted.' }],
+        messages: [bookingCreatedTemplate(makeBookingObj(payload))],
     });
 }
 

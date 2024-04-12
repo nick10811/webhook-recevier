@@ -1,14 +1,33 @@
-{
-    "type": "bubble",
-        "body": {
-        "type": "box",
-            "layout": "vertical",
+module.exports.bookingCreatedTemplate = function bookingCreatedTemplate(obj) {
+    return {
+        "type": "flex",
+        "altText": "Booking System",
+        "contents": {
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
                 "contents": [
                     {
                         "type": "text",
-                        "text": "Booking Information",
+                        "text": "Booking Confirmed",
                         "weight": "bold",
                         "size": "xl"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "baseline",
+                        "margin": "md",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": obj.greeting,
+                                "size": "sm",
+                                "color": "#999999",
+                                "margin": "md",
+                                "flex": 0
+                            }
+                        ]
                     },
                     {
                         "type": "box",
@@ -30,7 +49,7 @@
                                     },
                                     {
                                         "type": "text",
-                                        "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
+                                        "text": obj.location,
                                         "wrap": true,
                                         "color": "#666666",
                                         "size": "sm",
@@ -38,28 +57,28 @@
                                     }
                                 ]
                             },
-                            {
-                                "type": "box",
-                                "layout": "vertical",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "Time",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 1
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": "10:00 - 23:00",
-                                        "wrap": true,
-                                        "color": "#666666",
-                                        "size": "sm",
-                                        "flex": 5
-                                    }
-                                ]
-                            },
+                            // {
+                            //     "type": "box",
+                            //     "layout": "vertical",
+                            //     "spacing": "sm",
+                            //     "contents": [
+                            //         {
+                            //             "type": "text",
+                            //             "text": "Time",
+                            //             "color": "#aaaaaa",
+                            //             "size": "sm",
+                            //             "flex": 1
+                            //         },
+                            //         {
+                            //             "type": "text",
+                            //             "text": obj.duration,
+                            //             "wrap": true,
+                            //             "color": "#666666",
+                            //             "size": "sm",
+                            //             "flex": 5
+                            //         }
+                            //     ]
+                            // },
                             {
                                 "type": "box",
                                 "layout": "vertical",
@@ -74,7 +93,7 @@
                                     },
                                     {
                                         "type": "text",
-                                        "text": "Asia/Taipei",
+                                        "text": obj.timezone,
                                         "wrap": true,
                                         "color": "#666666",
                                         "size": "sm",
@@ -96,7 +115,7 @@
                                     },
                                     {
                                         "type": "text",
-                                        "text": "Nick",
+                                        "text": obj.attendee,
                                         "wrap": true,
                                         "color": "#666666",
                                         "size": "sm",
@@ -107,23 +126,25 @@
                         ]
                     }
                 ]
-    },
-    "footer": {
-        "type": "box",
-            "layout": "vertical",
+            },
+            "footer": {
+                "type": "box",
+                "layout": "vertical",
                 "spacing": "sm",
-                    "contents": [
-                        {
-                            "type": "button",
-                            "style": "link",
-                            "height": "sm",
-                            "action": {
-                                "type": "uri",
-                                "label": "Cancel",
-                                "uri": "https://linecorp.com"
-                            }
+                "contents": [
+                    {
+                        "type": "button",
+                        "style": "link",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "CANCEL BOOKING",
+                            "uri": obj.cancelURI,
                         }
-                    ],
-                        "flex": 0
-    }
-}
+                    }
+                ],
+                "flex": 0
+            }
+        }
+    };
+};
