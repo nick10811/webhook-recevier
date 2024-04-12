@@ -138,7 +138,17 @@ module.exports.bookingCreatedTemplate = function bookingCreatedTemplate(obj) {
                         "height": "sm",
                         "action": {
                             "type": "uri",
-                            "label": "CANCEL BOOKING",
+                            "label": "RESCHEDULE",
+                            "uri": obj.rescheduleURI,
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "style": "link",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "CANCEL",
                             "uri": obj.cancelURI,
                         }
                     }

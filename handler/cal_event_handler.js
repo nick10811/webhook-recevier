@@ -56,6 +56,7 @@ function getLineID(payload) {
 }
 
 function makeBookingObj(payload) {
+    const rescheduleURI = "https://cal.com/reschedule/" + payload.uid;
     const cancelURI = "https://cal.com/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
     return {
@@ -64,6 +65,7 @@ function makeBookingObj(payload) {
         duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
         timezone: payload.organizer.timeZone,
         attendee: payload.responses.name.value,
+        rescheduleURI: rescheduleURI,
         cancelURI: cancelURI,
     };
 }
