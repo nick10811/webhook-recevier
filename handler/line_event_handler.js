@@ -12,7 +12,7 @@ module.exports = function lineEventHandler(event) {
     const sentMessage = event.message.text;
     var replyMessage = '';
 
-    if (sentMessage === 'book') {
+    if (sentMessage.toLowerCase() === 'book') {
         const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
         replyMessage = bookingSystem(uri);
 
