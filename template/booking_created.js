@@ -16,7 +16,7 @@ module.exports.bookingCreatedTemplate = function bookingCreatedTemplate(obj) {
                     },
                     {
                         "type": "box",
-                        "layout": "baseline",
+                        "layout": "vertical",
                         "margin": "md",
                         "contents": [
                             {
