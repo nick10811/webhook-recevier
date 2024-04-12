@@ -6,8 +6,9 @@ const moment = require('moment-timezone');
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
     const payload = body.payload;
-    switch (event) {
+    switch (event.toUpperCase()) {
         case 'BOOKING_CREATED':
+        case 'BOOKING_RESCHEDULED':
             return bookingCreated(payload);
         case 'BOOKING_CANCELLED':
             return bookingCancelled(payload);
