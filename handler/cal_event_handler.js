@@ -57,8 +57,9 @@ function getLineID(payload) {
 }
 
 function makeBookingObj(payload) {
-    const rescheduleURI = "https://cal.com/reschedule/" + payload.uid;
-    const cancelURI = "https://cal.com/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
+    const baseURL = payload.bookerUrl;
+    const rescheduleURI = baseURL + "/reschedule/" + payload.uid;
+    const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
     return {
         greeting: "Hello " + payload.responses.name.value,
