@@ -6,8 +6,9 @@ const moment = require('moment-timezone');
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
     const payload = body.payload;
-    switch (event) {
+    switch (event.toUpperCase()) {
         case 'BOOKING_CREATED':
+        case 'BOOKING_RESCHEDULED':
             return bookingCreated(payload);
         case 'BOOKING_CANCELLED':
             return bookingCancelled(payload);
@@ -56,7 +57,9 @@ function getLineID(payload) {
 }
 
 function makeBookingObj(payload) {
-    const cancelURI = "https://cal.com/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
+    const baseURL = payload.bookerUrl;
+    const rescheduleURI = baseURL + "/reschedule/" + payload.uid;
+    const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
     return {
         greeting: "Hello " + payload.responses.name.value,
@@ -64,6 +67,7 @@ function makeBookingObj(payload) {
         duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
         timezone: payload.organizer.timeZone,
         attendee: payload.responses.name.value,
+        rescheduleURI: rescheduleURI,
         cancelURI: cancelURI,
     };
 }

@@ -16,7 +16,7 @@ module.exports.bookingCanceledTemplate = function bookingCanceledTemplate(obj) {
                     },
                     {
                         "type": "box",
-                        "layout": "baseline",
+                        "layout": "vertical",
                         "margin": "md",
                         "contents": [
                             {
