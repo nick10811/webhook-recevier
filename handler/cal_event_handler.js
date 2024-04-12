@@ -14,8 +14,12 @@ module.exports = function calEventHandler(body) {
 }
 
 function bookingCreated(body) {
-    const lineID = body.payload.responses.lineid.value;
+    const lineID = getLineID(body);
 
+    if (!lineID) {
+        return;
+    }
+    
     client.pushMessage({
         to: lineID,
         messages: [{ type: 'text', text: 'Your booking has been accepted.' }],
@@ -23,10 +27,25 @@ function bookingCreated(body) {
 }
 
 function bookingCancelled(body) {
-    const lineID = body.payload.responses.lineid.value;
+    const lineID = getLineID(body);
+
+    if (!lineID) {
+        return;
+    }
 
     client.pushMessage({
         to: lineID,
         messages: [{ type: 'text', text: 'Your booking has been canceled.' }],
     });
+}
+
+function getLineID(body) {
+    if (!body.payload.responses.lineid || !body.payload.responses.lineid.value) {
+        console.log("line id is null");
+        return;
+    }
+
+    const lineID = body.payload.responses.lineid.value;
+    console.log("line id: " + lineID);
+    return lineID;
 }
