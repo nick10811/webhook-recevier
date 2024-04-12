@@ -1,51 +1,53 @@
-const { client } = require("../client/line_client");
+const { client } = require('../client/line_client');
 
 module.exports = function calEventHandler(body) {
-    switch (body.triggerEvent) {
+    const event = body.triggerEvent;
+    const payload = body.payload;
+    switch (event) {
         case 'BOOKING_CREATED':
-            bookingCreated(body);
-            break;
+            return bookingCreated(payload);
         case 'BOOKING_CANCELLED':
-            bookingCancelled(body);
-            break;
+            return bookingCancelled(payload);
         default:
-            console.log(`received an unknown event: ${JSON.stringify(req)}`);
+            console.log(`received an unknown event: ${JSON.stringify(body)}`);
+            return Promise.reject({ status: 400, message: 'unknown event: ' + event });
     }
 }
 
-function bookingCreated(body) {
-    const lineID = getLineID(body);
+function bookingCreated(payload) {
+    const lineID = getLineID(payload);
 
     if (!lineID) {
         return;
     }
     
-    client.pushMessage({
+    return client.pushMessage({
         to: lineID,
         messages: [{ type: 'text', text: 'Your booking has been accepted.' }],
     });
 }
 
-function bookingCancelled(body) {
-    const lineID = getLineID(body);
+function bookingCancelled(payload) {
+    const lineID = getLineID(payload);
 
     if (!lineID) {
         return;
     }
 
-    client.pushMessage({
+    return client.pushMessage({
         to: lineID,
         messages: [{ type: 'text', text: 'Your booking has been canceled.' }],
     });
 }
 
-function getLineID(body) {
-    if (!body.payload.responses.lineid || !body.payload.responses.lineid.value) {
-        console.log("line id is null");
+function getLineID(payload) {
+    const responses = payload.responses;
+    if (!responses.lineid || !responses.lineid.value) {
+        console.log('line id is null');
         return;
     }
 
-    const lineID = body.payload.responses.lineid.value;
-    console.log("line id: " + lineID);
+    const lineID = responses.lineid.value;
+    console.log('line id: ' + lineID);
     return lineID;
 }
