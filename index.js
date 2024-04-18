@@ -31,8 +31,8 @@ app.use(bodyParser.json());
 app.post('/calwebhook', (req, res) => {
     console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
     Promise
-        .resolve()
-        .then(() => calEventHandler(req.body))
+        .resolve(calEventHandler(req.body))
+        .then(() => res.json({ status: 200, message: 'success' }))
         .catch((err) => {
             console.error(err);
             res.status(500).end();
