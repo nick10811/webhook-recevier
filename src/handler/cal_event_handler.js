@@ -1,5 +1,5 @@
 const { client } = require("../client/line_client");
-const { bookingCanceledTemplate } = require("../template/booking_canceled");
+import bookingCanceledTemplate from "../template/booking_canceled";
 import bookingCreatedTemplate from "../template/booking_created";
 import BookingObj from "../template/booking_obj";
 
