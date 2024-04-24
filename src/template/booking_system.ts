@@ -1,4 +1,6 @@
-module.exports.bookingSystem = function bookingSystem(uri) {
+import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
+
+export default function bookingSystem(uri: string): FlexMessage {
     return {
         "type": "flex",
         "altText": "Booking System",
