@@ -1,7 +1,7 @@
 const { client } = require("../client/line_client");
-const { bookingCreatedTemplate } = require("../template/booking_created");
 const { bookingCanceledTemplate } = require("../template/booking_canceled");
-const moment = require('moment-timezone');
+import bookingCreatedTemplate from "../template/booking_created";
+import BookingObj from "../template/booking_obj";
 
 module.exports = function calEventHandler(body) {
     const event = body.triggerEvent;
@@ -27,7 +27,7 @@ function bookingCreated(payload) {
     
     return client.pushMessage({
         to: lineID,
-        messages: [bookingCreatedTemplate(makeBookingObj(payload))],
+        messages: [bookingCreatedTemplate(BookingObj.makeObj(payload))],
     });
 }
 
@@ -40,7 +40,7 @@ function bookingCancelled(payload) {
 
     return client.pushMessage({
         to: lineID,
-        messages: [bookingCanceledTemplate(makeBookingObj(payload))],
+        messages: [bookingCanceledTemplate(BookingObj.makeObj(payload))],
     });
 }
 
@@ -54,26 +54,4 @@ function getLineID(payload) {
     const lineID = responses.lineid.value;
     console.log('line id: ' + lineID);
     return lineID;
-}
-
-function makeBookingObj(payload) {
-    const baseURL = payload.bookerUrl;
-    const rescheduleURI = baseURL + "/reschedule/" + payload.uid;
-    const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
-
-    return {
-        greeting: "Hello " + payload.responses.name.value,
-        location: payload.location,
-        duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
-        timezone: payload.organizer.timeZone,
-        attendee: payload.responses.name.value,
-        rescheduleURI: rescheduleURI,
-        cancelURI: cancelURI,
-    };
-}
-
-function makeDurationString(startTime, endTime, timezone) {
-    const start = moment.utc(startTime).tz(timezone).format('YYYY-MM-DD HH:mm');
-    const end = moment.utc(endTime).tz(timezone).format('HH:mm');
-    return `${start} - ${end}`;
 }

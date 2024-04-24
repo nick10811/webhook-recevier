@@ -16,7 +16,7 @@ function makeDurationString(startTime: string, endTime: string, timezone: string
     return `${start} - ${end}`;
 }
 
-export function BookingObj(payload: any): BookingObj {
+function makeObj(payload: any): BookingObj {
     const baseURL = payload.bookerUrl;
     const rescheduleURI = baseURL + "/reschedule/" + payload.uid;
     const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
@@ -31,3 +31,9 @@ export function BookingObj(payload: any): BookingObj {
         cancelURI: cancelURI,
     };
 }
+
+const BookingObj = {
+    makeObj,
+};
+
+export default BookingObj;
