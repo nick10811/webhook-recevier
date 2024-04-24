@@ -1,5 +1,5 @@
-const { client } = require("../client/line_client");
 const { bookingSystem } = require("../template/booking_system");
+import { client } from '../client/line_client';
 
 module.exports = function lineEventHandler(event) {
     if (event.type !== 'message' || event.message.type !== 'text') {

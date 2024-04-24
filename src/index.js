@@ -6,15 +6,15 @@ const serverless = require('serverless-http');
 const line = require('@line/bot-sdk');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { config: lineConfig } = require('./client/line_client');
 const lineEventHandler = require('./handler/line_event_handler');
 const calEventHandler = require('./handler/cal_event_handler');
+import * as lineConfig from './client/line_client';
 
 // create Express app
 const app = express();
 
 // line webhook
-app.post('/linewebhook', line.middleware(lineConfig), (req, res) => {
+app.post('/linewebhook', line.middleware(lineConfig.middlewareConfig), (req, res) => {
     console.log(`received a webhook event (line): ${JSON.stringify(req.body)}`)
     Promise
         .all(req.body.events.map(lineEventHandler))
