@@ -1,7 +1,7 @@
 import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
 import { BookingObj } from "./booking_obj";
 
-export default function bookingCanceledTemplate(obj: BookingObj): FlexMessage {
+export default function bookingCanceled(obj: BookingObj): FlexMessage {
     return {
         "type": "flex",
         "altText": "Booking System",

@@ -1,6 +1,5 @@
 const { client } = require("../client/line_client");
-import bookingCanceledTemplate from "../template/booking_canceled";
-import bookingCreatedTemplate from "../template/booking_created";
+import template from "../template";
 import BookingObj from "../template/booking_obj";
 
 module.exports = function calEventHandler(body) {
@@ -27,7 +26,7 @@ function bookingCreated(payload) {
     
     return client.pushMessage({
         to: lineID,
-        messages: [bookingCreatedTemplate(BookingObj.makeObj(payload))],
+        messages: [template.bookingCreated(BookingObj.makeObj(payload))],
     });
 }
 
@@ -40,7 +39,7 @@ function bookingCancelled(payload) {
 
     return client.pushMessage({
         to: lineID,
-        messages: [bookingCanceledTemplate(BookingObj.makeObj(payload))],
+        messages: [template.bookingCanceled(BookingObj.makeObj(payload))],
     });
 }
 
