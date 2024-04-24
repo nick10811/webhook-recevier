@@ -13,8 +13,16 @@ This is a simple webhook receiver that listens for incoming POST requests and lo
   - CHANNEL_ID=line_channel_id
   - CHANNEL_SECRET=line_channel_secret
   - CHANNEL_ACCESS_TOKEN=line_channel_access_token
+- run `npm install` to install dependencies
+- run `npm build` to build the project
+- run `npm start` to start the server
 
-### Run
+### Archiving
+```sh
+npm install
+npm run build
+npm run archive
+```
 
 #### ngrok
 1. Configure ngrok by running `ngrok authtoken <your_auth_token>`.

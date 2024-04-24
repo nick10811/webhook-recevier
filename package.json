@@ -2,9 +2,12 @@
   "name": "webhook-receiver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon --env-file=.env index.js"
+    "clean": "rm -rf archive* & rm -rf build*",
+    "build": "npm run clean & tsc",
+    "archive": "cp -R node_modules build/; cd build/; zip -r ../archive.zip .",
+    "start": "nodemon --env-file=.env build/index.js"
   },
   "keywords": [],
   "author": "nick10811@gmail.com",
