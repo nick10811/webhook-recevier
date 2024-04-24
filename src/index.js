@@ -6,9 +6,9 @@ const serverless = require('serverless-http');
 const line = require('@line/bot-sdk');
 const express = require('express');
 const bodyParser = require('body-parser');
-const lineEventHandler = require('./handler/line_event_handler');
 const calEventHandler = require('./handler/cal_event_handler');
 import * as lineConfig from './client/line_client';
+import lineEventHandler from './handler/line_event_handler';
 
 // create Express app
 const app = express();
