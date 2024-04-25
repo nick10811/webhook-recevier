@@ -1,5 +1,4 @@
 import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
-import { BookingObj } from "./booking_obj";
 
 export default function bookingCanceled(obj: BookingObj): FlexMessage {
     return {

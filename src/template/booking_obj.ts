@@ -1,15 +1,5 @@
 import moment from "moment-timezone";
 
-export interface BookingObj {
-    greeting: string;
-    location: string;
-    duration: string;
-    timezone: string;
-    attendee: string;
-    rescheduleURI: string;
-    cancelURI: string;
-}
-
 function makeDurationString(startTime: string, endTime: string, timezone: string) {
     const start = moment.utc(startTime).tz(timezone).format('YYYY-MM-DD HH:mm');
     const end = moment.utc(endTime).tz(timezone).format('HH:mm');
