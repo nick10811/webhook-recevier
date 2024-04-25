@@ -1,7 +1,7 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
 import { client } from '../client/line_client';
 import template from "../template";
-import BookingObj from "../template/booking_obj";
+import bookingHandler from "./booking_handler";
 
 function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined>{
     const lineID = getLineID(payload);
@@ -12,7 +12,7 @@ function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefin
     
     return client.pushMessage({
         to: lineID,
-        messages: [template.bookingCreated(BookingObj.makeObj(payload))],
+        messages: [template.bookingCreated(bookingHandler.makeObj(payload))],
     });
 }
 
@@ -25,7 +25,7 @@ function bookingCancelled(payload: Payload): Promise<PushMessageResponse | undef
 
     return client.pushMessage({
         to: lineID,
-        messages: [template.bookingCanceled(BookingObj.makeObj(payload))],
+        messages: [template.bookingCanceled(bookingHandler.makeObj(payload))],
     });
 }
 
