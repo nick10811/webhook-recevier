@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
 import Config from './config/config';

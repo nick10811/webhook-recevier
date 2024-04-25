@@ -1,12 +1,9 @@
-import * as dotenv from 'dotenv';
 import Config from '../config/config';
 import {
     ClientConfig,
     messagingApi,
     MiddlewareConfig,
 } from '@line/bot-sdk';
-
-dotenv.config();
 
 // Setup all LINE client and Express configurations.
 const clientConfig: ClientConfig = {
