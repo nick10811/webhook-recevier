@@ -1,9 +1,10 @@
-interface CalResponse {
+export interface CalResponse {
     triggerEvent: string;
     createdAt: string;
     payload: Payload;
 }
-interface Payload {
+
+export interface Payload {
     bookerUrl: string;
     type: string;
     title: string;
@@ -40,10 +41,12 @@ interface Payload {
     metadata: Metadata;
     status: string;
 }
-interface Metadata {
+
+export interface Metadata {
     videoCallUrl: string;
 }
-interface AppsStatus {
+
+export interface AppsStatus {
     appName: string;
     type: string;
     success: number;
@@ -51,13 +54,16 @@ interface AppsStatus {
     errors: any[];
     warnings?: any[];
 }
-interface ConferenceData {
+
+export interface ConferenceData {
     createRequest: CreateRequest;
 }
-interface CreateRequest {
+
+export interface CreateRequest {
     requestId: string;
 }
-interface DestinationCalendar {
+
+export interface DestinationCalendar {
     id: number;
     integration: string;
     externalId: string;
@@ -66,7 +72,8 @@ interface DestinationCalendar {
     eventTypeId?: any;
     credentialId: number;
 }
-interface Attendee {
+
+export interface Attendee {
     email: string;
     name: string;
     firstName: string;
@@ -75,12 +82,14 @@ interface Attendee {
     language: Language;
     utcOffset: number;
 }
-interface UserFieldsResponses {
+
+export interface UserFieldsResponses {
     phone: Phone;
     lineid: Name;
     title: Phone;
 }
-interface Responses {
+
+export interface Responses {
     location: Location;
     name: Name;
     email: Name;
@@ -91,30 +100,36 @@ interface Responses {
     rescheduleReason: Phone;
     lineid: Name;
 }
-interface Guests {
+
+export interface Guests {
     label: string;
     value: any[];
     isHidden: boolean;
 }
-interface Phone {
+
+export interface Phone {
     label: string;
     isHidden: boolean;
 }
-interface Name {
+
+export interface Name {
     label: string;
     value: string;
     isHidden: boolean;
 }
-interface Location {
+
+export interface Location {
     label: string;
     value: Value;
     isHidden: boolean;
 }
-interface Value {
+
+export interface Value {
     optionValue: string;
     value: string;
 }
-interface Organizer {
+
+export interface Organizer {
     id: number;
     name: string;
     email: string;
@@ -124,8 +139,10 @@ interface Organizer {
     timeFormat: string;
     utcOffset: number;
 }
-interface Language {
+
+export interface Language {
     locale: string;
 }
-interface CustomInputs {
+
+export interface CustomInputs {
 }

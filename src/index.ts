@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
 import Config from './config/config';
@@ -10,7 +8,8 @@ import {
     HTTPFetchError,
 } from '@line/bot-sdk';
 import * as lineConfig from './client/line_client';
-import handler from './handler';
+import controller from './controller';
+import { CalResponse } from './model';
 
 // create Express app
 const app = express();
@@ -29,7 +28,7 @@ app.post(
         const results = await Promise.all(
             events.map(async (event: webhook.Event) => {
                 try {
-                    await handler.lineEvent(event);
+                    await controller.lineEvent(event);
                 } catch (err: unknown) {
                     if (err instanceof HTTPFetchError) {
                         console.error(err.status);
@@ -62,7 +61,7 @@ app.post(
 
         const callbackRequest: CalResponse = req.body;
         const results = await Promise
-            .resolve(handler.calEvent(callbackRequest))
+            .resolve(controller.calEvent(callbackRequest))
             .then((result) => res.json(result))
             .catch((err) => {
                 console.error(err);

@@ -10,6 +10,7 @@ This is a simple webhook receiver that listens for incoming POST requests and lo
 
 ## Development
 - set .env file with the following variables:
+  - ENVIRONMENT=dev
   - CHANNEL_ID=line_channel_id
   - CHANNEL_SECRET=line_channel_secret
   - CHANNEL_ACCESS_TOKEN=line_channel_access_token
