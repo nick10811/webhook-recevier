@@ -1,5 +1,5 @@
 import { client } from '../client/line_client';
-import bookingSystem from '../template/booking_system';
+import template from '../template';
 import {
     MessageAPIResponseBase,
     webhook,
@@ -29,7 +29,7 @@ const lineEventHandler = async (event: webhook.Event): Promise<MessageAPIRespons
 
     if (sentMessage.toLowerCase() === 'book') {
         const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
-        replyMessage = bookingSystem(uri) as Message;
+        replyMessage = template.bookingSystem(uri) as Message;
 
     } else {
         // create an echoing text message

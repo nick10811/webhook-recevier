@@ -1,4 +1,6 @@
-module.exports.bookingCreatedTemplate = function bookingCreatedTemplate(obj) {
+import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
+
+export default function bookingCreated(obj: BookingObj): FlexMessage {
     return {
         "type": "flex",
         "altText": "Booking System",
