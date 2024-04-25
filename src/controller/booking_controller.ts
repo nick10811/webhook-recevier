@@ -1,9 +1,9 @@
 import moment from "moment-timezone";
 import { BookingObj, Payload } from "../model";
 
-function makeDurationString(startTime: string, endTime: string, timezone: string) {
-    const start = moment.utc(startTime).tz(timezone).format('YYYY-MM-DD HH:mm');
-    const end = moment.utc(endTime).tz(timezone).format('HH:mm');
+function makeDurationString(startTime: string, endTime: string, timezone: string): string {
+    const start = moment.utc(startTime, true).tz(timezone).format('YYYY-MM-DD HH:mm');
+    const end = moment.utc(endTime, true).tz(timezone).format('HH:mm');
     return `${start} - ${end}`;
 }
 
@@ -13,11 +13,11 @@ function makeObj(payload: Payload): BookingObj {
     const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
     return {
-        greeting: "Hello " + payload.responses.name.value,
+        greeting: "Hello " + payload.responses.name?.value,
         location: payload.location,
         duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
         timezone: payload.organizer.timeZone,
-        attendee: payload.responses.name.value,
+        attendee: payload.responses.name?.value ?? "unknown name",
         rescheduleURI: rescheduleURI,
         cancelURI: cancelURI,
     };
@@ -25,6 +25,7 @@ function makeObj(payload: Payload): BookingObj {
 
 const bookingController = {
     makeObj,
+    makeDurationString,
 };
 
 export default bookingController;

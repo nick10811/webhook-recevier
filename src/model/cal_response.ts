@@ -10,12 +10,12 @@ export interface Payload {
     title: string;
     description: string;
     additionalNotes: string;
-    customInputs: CustomInputs;
+    customInputs: CustomInputs | undefined;
     startTime: string;
     endTime: string;
     organizer: Organizer;
     responses: Responses;
-    userFieldsResponses: UserFieldsResponses;
+    userFieldsResponses: UserFieldsResponses | undefined;
     attendees: Attendee[];
     location: string;
     conferenceCredentialId: number;
@@ -30,7 +30,7 @@ export interface Payload {
     iCalUID: string;
     iCalSequence: number;
     uid: string;
-    conferenceData: ConferenceData;
+    conferenceData: ConferenceData | undefined;
     appsStatus: AppsStatus[];
     eventTitle: string;
     eventDescription: string;
@@ -38,7 +38,7 @@ export interface Payload {
     currency: string;
     length: number;
     bookingId: number;
-    metadata: Metadata;
+    metadata: Metadata | undefined;
     status: string;
 }
 
@@ -90,15 +90,15 @@ export interface UserFieldsResponses {
 }
 
 export interface Responses {
-    location: Location;
-    name: Name;
-    email: Name;
-    phone: Phone;
-    title: Phone;
-    notes: Phone;
-    guests: Guests;
-    rescheduleReason: Phone;
-    lineid: Name;
+    location: Location | undefined;
+    name: Name | undefined;
+    email: Name | undefined;
+    phone: Phone | undefined;
+    title: Phone | undefined;
+    notes: Phone | undefined;
+    guests: Guests | undefined;
+    rescheduleReason: Phone | undefined;
+    lineid: Name | undefined;
 }
 
 export interface Guests {
@@ -135,7 +135,7 @@ export interface Organizer {
     email: string;
     username: string;
     timeZone: string;
-    language: Language;
+    language: Language | undefined;
     timeFormat: string;
     utcOffset: number;
 }
