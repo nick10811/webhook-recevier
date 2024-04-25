@@ -3,7 +3,7 @@ import { client } from '../client/line_client';
 import template from "../template";
 import BookingObj from "../template/booking_obj";
 
-function bookingCreated(payload: any): Promise<PushMessageResponse | undefined>{
+function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined>{
     const lineID = getLineID(payload);
 
     if (!lineID) {
@@ -16,7 +16,7 @@ function bookingCreated(payload: any): Promise<PushMessageResponse | undefined>{
     });
 }
 
-function bookingCancelled(payload: any): Promise<PushMessageResponse | undefined>    {
+function bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined>    {
     const lineID = getLineID(payload);
 
     if (!lineID) {
@@ -29,7 +29,7 @@ function bookingCancelled(payload: any): Promise<PushMessageResponse | undefined
     });
 }
 
-function getLineID(payload: any): string | undefined {
+function getLineID(payload: Payload): string | undefined {
     const responses = payload.responses;
     if (!responses.lineid || !responses.lineid.value) {
         console.log('line id is null');
@@ -41,8 +41,8 @@ function getLineID(payload: any): string | undefined {
     return lineID;
 }
 
-const calEventHandler = async (body: any): Promise<PushMessageResponse | undefined> => {
-    const event = body.triggerEvent as string;
+const calEventHandler = async (body: CalResponse): Promise<PushMessageResponse | undefined> => {
+    const event = body.triggerEvent;
     const payload = body.payload;
     switch (event.toUpperCase()) {
         case 'BOOKING_CREATED':

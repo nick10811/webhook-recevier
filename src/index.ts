@@ -20,9 +20,10 @@ app.post(
     '/linewebhook',
     middleware(lineConfig.middlewareConfig),
     async (req: Request, res: Response): Promise<Response> => {
+        console.log(`received a webhook event (line): ${JSON.stringify(req.body)}`)
+
         const callbackRequest: webhook.CallbackRequest = req.body;
         const events: webhook.Event[] = callbackRequest.events!;
-        console.log(`received a webhook event (line): ${JSON.stringify(req.body)}`)
 
         // Process all the received events asynchronously.
         const results = await Promise.all(
@@ -38,10 +39,7 @@ app.post(
                         console.error(err);
                     }
 
-                    // Return an error message.
-                    return res.status(500).json({
-                        status: 'error',
-                    });
+                    return res.status(500).json({ status: 'error' });
                 }
             })
         );
@@ -57,16 +55,25 @@ app.post(
 app.use(bodyParser.json());
 
 // cal.com webhook
-app.post('/calwebhook', (req, res) => {
-    console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
-    Promise
-        .resolve(handler.calEvent(req.body))
-        .then((result) => res.json(result))
-        .catch((err) => {
-            console.error(err);
-            res.status(500).end();
+app.post(
+    '/calwebhook',
+    async (req: Request, res: Response): Promise<Response> => {
+        console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
+
+        const callbackRequest: CalResponse = req.body;
+        const results = await Promise
+            .resolve(handler.calEvent(callbackRequest))
+            .then((result) => res.json(result))
+            .catch((err) => {
+                console.error(err);
+                return res.status(500).json({ status: 'error' });
+            });
+
+        return res.status(200).json({
+            status: 'success',
+            results,
         });
-});
+    });
 
 if (Config.ENVIRONMENT === 'prod') {
     console.log("environment is production");
