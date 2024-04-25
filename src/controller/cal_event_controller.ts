@@ -1,7 +1,7 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
 import { client } from '../client/line_client';
 import template from "../template";
-import bookingHandler from "./booking_handler";
+import bookingController from "./booking_controller";
 import { CalResponse, Payload } from '../model';
 
 function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined>{
@@ -13,7 +13,7 @@ function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefin
     
     return client.pushMessage({
         to: lineID,
-        messages: [template.bookingCreated(bookingHandler.makeObj(payload))],
+        messages: [template.bookingCreated(bookingController.makeObj(payload))],
     });
 }
 
@@ -26,7 +26,7 @@ function bookingCancelled(payload: Payload): Promise<PushMessageResponse | undef
 
     return client.pushMessage({
         to: lineID,
-        messages: [template.bookingCanceled(bookingHandler.makeObj(payload))],
+        messages: [template.bookingCanceled(bookingController.makeObj(payload))],
     });
 }
 
@@ -42,7 +42,7 @@ function getLineID(payload: Payload): string | undefined {
     return lineID;
 }
 
-const calEventHandler = async (body: CalResponse): Promise<PushMessageResponse | undefined> => {
+const calEventController = async (body: CalResponse): Promise<PushMessageResponse | undefined> => {
     const event = body.triggerEvent;
     const payload = body.payload;
     switch (event.toUpperCase()) {
@@ -57,4 +57,4 @@ const calEventHandler = async (body: CalResponse): Promise<PushMessageResponse |
     }
 }
 
-export default calEventHandler;
+export default calEventController;

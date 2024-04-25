@@ -18,7 +18,7 @@ const isTextEvent = (event: any): event is webhook.MessageEvent & { message: web
     return event.type === 'message' && event.message && event.message.type === 'text';
 };
 
-const lineEventHandler = async (event: webhook.Event): Promise<MessageAPIResponseBase | undefined> => {
+const lineEventController = async (event: webhook.Event): Promise<MessageAPIResponseBase | undefined> => {
     if (!isTextEvent(event)) {
         return;
     }
@@ -50,4 +50,4 @@ const lineEventHandler = async (event: webhook.Event): Promise<MessageAPIRespons
     });
 };
 
-export default lineEventHandler;
+export default lineEventController;

@@ -23,8 +23,8 @@ function makeObj(payload: Payload): BookingObj {
     };
 }
 
-const bookingHandler = {
+const bookingController = {
     makeObj,
 };
 
-export default bookingHandler;
+export default bookingController;
