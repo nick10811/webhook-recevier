@@ -2,6 +2,7 @@ import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
 import { client } from '../client/line_client';
 import template from "../template";
 import bookingHandler from "./booking_handler";
+import { CalResponse, Payload } from '../model';
 
 function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined>{
     const lineID = getLineID(payload);

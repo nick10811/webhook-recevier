@@ -1,4 +1,4 @@
-interface BookingObj {
+export interface BookingObj {
     greeting: string;
     location: string;
     duration: string;

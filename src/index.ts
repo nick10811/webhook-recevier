@@ -11,6 +11,7 @@ import {
 } from '@line/bot-sdk';
 import * as lineConfig from './client/line_client';
 import handler from './handler';
+import { CalResponse } from './model';
 
 // create Express app
 const app = express();

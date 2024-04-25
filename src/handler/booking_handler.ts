@@ -1,4 +1,5 @@
 import moment from "moment-timezone";
+import { BookingObj, Payload } from "../model";
 
 function makeDurationString(startTime: string, endTime: string, timezone: string) {
     const start = moment.utc(startTime).tz(timezone).format('YYYY-MM-DD HH:mm');
