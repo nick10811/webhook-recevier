@@ -4,11 +4,12 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "clean": "rm -rf archive* & rm -rf build*",
+    "clean": "rm -rf out & rm -rf build",
     "build": "npm run clean & tsc",
-    "archive": "cp -R node_modules build/; cd build/; zip -r ../archive.zip .",
-    "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node src/index.ts'",
-    "test": "vitest"
+    "archive": "cp -R node_modules build/; mkdir -p ./out/artifact/; cd build/; zip -r ../out/artifact/archive.zip .",
+    "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.test.ts' --exec 'ts-node src/index.ts'",
+    "test": "vitest --root ./src",
+    "test:report": "vitest --root ./src --coverage --coverage.reportsDirectory=../out/report"
   },
   "keywords": [],
   "author": "nick10811@gmail.com",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@vitest/coverage-v8": "^1.5.2",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
