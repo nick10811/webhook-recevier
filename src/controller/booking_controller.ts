@@ -13,6 +13,8 @@ function makeObj(payload: Payload): BookingObj {
     const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
     return {
+        bookingId: payload.bookingId.toString(),
+        status: payload.status,
         greeting: "Hello " + payload.responses.name?.value,
         location: payload.location,
         duration: makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
