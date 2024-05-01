@@ -89,3 +89,60 @@ describe('GoogleService_getSheetData', () => {
         }
     });
 });
+
+describe('GoogleService_appendSheetData', () => {
+    test.skip('skip ci for real case', async () => {
+        // arrange
+        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = "whatever";
+        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "whatever";
+        const srv = new GoogleService();
+        const spreadsheetId = 'whatever';
+        const sheetName = 'reservations';
+        const values = [['demo - John Doe', 'New York', '2021-01-01 10:00', 'America/New_York']];
+
+        // act
+        const got = await srv.appendSheetData(spreadsheetId, sheetName, values);
+
+        // assert
+        assert.equal(got.spreadsheetId, "whatever");
+    });
+
+    test('OK', async () => {
+        // arrange
+        const srv = new GoogleService();
+        const spreadsheetId = 'sheet-id';
+        const sheetName = 'reservations';
+        const values = [['demo - John Doe', 'New York', '2021-01-01 10:00', 'America/New_York']];
+
+        vi.spyOn(srv, "appendSheetData").mockResolvedValue({ spreadsheetId: "sheet-id" });
+
+        // act
+        try {
+            const got = await srv.appendSheetData(spreadsheetId, sheetName, values);
+
+            // assert
+            assert.equal(got.spreadsheetId, "sheet-id");
+        }
+        catch (e) {
+            throw e;
+        }
+    });
+
+    test('google sheets error', async () => {
+        // arrange
+        const srv = new GoogleService();
+        const spreadsheetId = 'sheet-id';
+        const sheetName = 'reservations';
+        const values = [['demo - John Doe', 'New York', '2021-01-01 10:00', 'America/New_York']];
+
+        vi.spyOn(srv, "appendSheetData").mockRejectedValue(new Error("whatever"));
+
+        // act
+        try {
+            await srv.appendSheetData(spreadsheetId, sheetName, values);
+        } catch (err) {
+            // assert
+            assert.equal(err.message, "whatever");
+        }
+    });
+});

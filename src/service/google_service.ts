@@ -32,4 +32,18 @@ export class GoogleService {
         return resp.data.values;
 
     }
+
+    async appendSheetData(spreadsheetId: string, sheetName: string, values: string[][]) {
+        const auth = this.getAuthToken();
+        const resp = await this._sheets.spreadsheets.values.append({
+            auth: auth,
+            spreadsheetId: spreadsheetId,
+            range: sheetName,
+            valueInputOption: 'RAW',
+            requestBody: {
+                values: values
+            }
+        });
+        return resp.data;
+    }
 }
