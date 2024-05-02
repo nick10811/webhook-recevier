@@ -1,5 +1,5 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
-import { client } from '../client/line_client';
+import service from '../service';
 import template from "../template";
 import bookingController from "./booking_controller";
 import { CalResponse, Payload } from '../model';
@@ -11,7 +11,7 @@ function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefin
         return Promise.resolve(undefined);
     }
     
-    return client.pushMessage({
+    return service.line.pushMessage({
         to: lineID,
         messages: [template.bookingCreated(bookingController.makeObj(payload))],
     });
@@ -24,7 +24,7 @@ function bookingCancelled(payload: Payload): Promise<PushMessageResponse | undef
         return Promise.resolve(undefined);
     }
 
-    return client.pushMessage({
+    return service.line.pushMessage({
         to: lineID,
         messages: [template.bookingCanceled(bookingController.makeObj(payload))],
     });

@@ -47,3 +47,5 @@ export class GoogleService {
         return resp.data;
     }
 }
+
+export default new GoogleService();

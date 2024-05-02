@@ -14,9 +14,9 @@ export const middlewareConfig: MiddlewareConfig = {
     channelSecret: Config.CHANNEL_SECRET || '',
 };
 
-export interface ILineClient extends messagingApi.MessagingApiClient {}
+export interface ILineService extends messagingApi.MessagingApiClient {}
 
-export class LineClient extends messagingApi.MessagingApiClient implements ILineClient {}
+export class LineService extends messagingApi.MessagingApiClient implements ILineService {}
 
 // Create a new LINE SDK client.
-export const client = new LineClient(clientConfig);
+export default new LineService(clientConfig);

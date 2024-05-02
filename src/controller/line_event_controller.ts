@@ -1,4 +1,4 @@
-import { client } from '../client/line_client';
+import service from '../service';
 import template from '../template';
 import {
     MessageAPIResponseBase,
@@ -8,7 +8,7 @@ import {
 
 // push notification
 function pushMessage(userID: string) {
-    client.pushMessage({
+    service.line.pushMessage({
         to: userID,
         messages: [{ type: 'text', text: 'Hello, This is a reminder message.' }],
     });
@@ -44,7 +44,7 @@ const lineEventController = async (event: webhook.Event): Promise<MessageAPIResp
     }
 
     // use reply API
-    await client.replyMessage({
+    await service.line.replyMessage({
         replyToken: event.replyToken as string,
         messages: [replyMessage],
     });
