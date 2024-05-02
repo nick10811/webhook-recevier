@@ -1,7 +1,6 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
-import service from '../service';
 import template from "../template";
-import bookingController, { BookingController } from "./booking_controller";
+import { BookingController } from "./booking_controller";
 import { CalResponse, Payload } from '../model';
 import { SheetsController } from './sheets_controller';
 import { LineService } from '../service/line_service';
@@ -31,7 +30,7 @@ export class CalEventController implements ICalEventController {
             case 'BOOKING_RESCHEDULED':
                 return this.bookingCreated(payload);
             case 'BOOKING_CANCELLED':
-                return bookingCancelled(payload);
+                return this.bookingCancelled(payload);
             default:
                 console.log(`received an unknown event: ${JSON.stringify(body)}`);
                 return Promise.reject({ status: 400, message: 'unknown event: ' + event });
@@ -66,7 +65,7 @@ export class CalEventController implements ICalEventController {
         }
 
         const bookingObj = this._srv.booking.makeObj(payload);
-        
+
         return this._srv.line.pushMessage({
             to: lineID,
             messages: [template.bookingCanceled(bookingObj)],
@@ -85,58 +84,3 @@ export class CalEventController implements ICalEventController {
         return lineID;
     }
 }
-
-function bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined>{
-    const lineID = getLineID(payload);
-
-    if (!lineID) {
-        return Promise.resolve(undefined);
-    }
-    
-    return service.line.pushMessage({
-        to: lineID,
-        messages: [template.bookingCreated(bookingController.makeObj(payload))],
-    });
-}
-
-function bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined>    {
-    const lineID = getLineID(payload);
-
-    if (!lineID) {
-        return Promise.resolve(undefined);
-    }
-
-    return service.line.pushMessage({
-        to: lineID,
-        messages: [template.bookingCanceled(bookingController.makeObj(payload))],
-    });
-}
-
-function getLineID(payload: Payload): string | undefined {
-    const responses = payload.responses;
-    if (!responses.lineid || !responses.lineid.value) {
-        console.log('line id is null');
-        return;
-    }
-
-    const lineID = responses.lineid.value;
-    console.log('line id: ' + lineID);
-    return lineID;
-}
-
-const calEventController = async (body: CalResponse): Promise<PushMessageResponse | undefined> => {
-    const event = body.triggerEvent;
-    const payload = body.payload;
-    switch (event.toUpperCase()) {
-        case 'BOOKING_CREATED':
-        case 'BOOKING_RESCHEDULED':
-            return bookingCreated(payload);
-        case 'BOOKING_CANCELLED':
-            return bookingCancelled(payload);
-        default:
-            console.log(`received an unknown event: ${JSON.stringify(body)}`);
-            return Promise.reject({ status: 400, message: 'unknown event: ' + event });
-    }
-}
-
-export default calEventController;
