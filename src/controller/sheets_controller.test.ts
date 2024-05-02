@@ -3,7 +3,6 @@ import { BookingObj, SheetsObj } from "../model";
 import sheetsController, { SheetsController } from "./sheets_controller";
 import { GoogleService } from "../service/google_service";
 
-
 describe('SheetsController_makeObj', () => {
     test('ok', () => {
         // arrange
@@ -18,7 +17,7 @@ describe('SheetsController_makeObj', () => {
             rescheduleURI: 'https://example.com/reschedule/uid',
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
         };
-        
+
         const want: SheetsObj = {
             bookingId: 'bookingId',
             name: 'unknown name',
@@ -69,4 +68,35 @@ describe('sheetsController_appendReservation', () => {
         expect(got).toBeUndefined();
     });
 
+    test('GoogleService Error', () => {
+        // arrange
+        const arg: BookingObj = {
+            bookingId: 'whatever',
+            status: 'whatever',
+            greeting: 'whatever',
+            location: 'whatever',
+            duration: 'whatever',
+            timezone: 'whatever',
+            attendee: 'whatever',
+            rescheduleURI: 'whatever',
+            cancelURI: 'whatever',
+        };
+
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const appendSheetData = vi
+            .spyOn(mockGoogleService, 'appendSheetData')
+            .mockImplementation(() => {
+                throw new Error('whatever');
+            });
+
+        // act
+        const got = controller.appendReservation(arg);
+
+        // expect
+        expect(appendSheetData).toHaveBeenCalledTimes(1);
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('failed to append reservation: whatever');
+    });
 });
