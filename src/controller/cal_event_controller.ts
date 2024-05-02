@@ -38,11 +38,11 @@ export class CalEventController implements ICalEventController {
         }
     }
 
-    private bookingCreated(payload: Payload): Promise<PushMessageResponse | undefined> {
+    private bookingCreated(payload: Payload) {
         const lineID = this.getLineID(payload);
 
         if (!lineID) {
-            return Promise.resolve(undefined);
+            return Promise.reject(new Error('line id is null'));
         }
 
         const bookingObj = this._srv.booking.makeObj(payload);
