@@ -1,6 +1,11 @@
-import { describe, test, assert } from 'vitest';
-import bookingController from './booking_controller';
+import { describe, test, expect } from 'vitest';
+import { BookingController, IBookingController } from './booking_controller';
 import { Payload } from '../model';
+
+interface IBookingControllerTest extends IBookingController {
+    // private method
+    makeDurationString(startTime: string, endTime: string, timezone: string): string;
+}
 
 describe('makeDurationString', () => {
     type Args = {
@@ -56,11 +61,14 @@ describe('makeDurationString', () => {
 
     tests.forEach(({ name, args, want }) => {
         test(name, () => {
-            // act
-            const got = bookingController.makeDurationString(args.startTime, args.endTime, args.timezone);
+            // arrange
+            const ctl = new BookingController() as IBookingControllerTest;
 
-            // assert
-            assert.equal(got, want);
+            // act
+            const got = ctl.makeDurationString(args.startTime, args.endTime, args.timezone);
+
+            // expect
+            expect(got).toBe(want);
         });
     });
 
@@ -136,10 +144,13 @@ describe('makeObj', () => {
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
         }
 
-        // act
-        const got = bookingController.makeObj(arg);
+        // arrange
+        const ctl = new BookingController();
 
-        // assert
-        assert.deepEqual(got, want);
+        // act
+        const got = ctl.makeObj(arg);
+
+        // expect
+        expect(got).toEqual(want);
     });
 });
