@@ -29,7 +29,7 @@ export class CalEventController implements ICalEventController {
         switch (event.toUpperCase()) {
             case 'BOOKING_CREATED':
             case 'BOOKING_RESCHEDULED':
-                return bookingCreated(payload);
+                return this.bookingCreated(payload);
             case 'BOOKING_CANCELLED':
                 return bookingCancelled(payload);
             default:
@@ -49,7 +49,7 @@ export class CalEventController implements ICalEventController {
         const err = this._srv.sheets.appendReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to append reservation to sheet: ${err.message}`);
-            return Promise.reject(err);
+            return Promise.reject(new Error(`failed to append reservation to sheet: ${err.message}`));
         }
 
         return this._srv.line.pushMessage({
