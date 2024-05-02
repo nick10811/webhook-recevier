@@ -24,7 +24,7 @@ export class BookingController implements IBookingController {
         };
     }
 
-    makeDurationString(startTime: string, endTime: string, timezone: string): string {
+    private makeDurationString(startTime: string, endTime: string, timezone: string): string {
         const start = moment.utc(startTime, true).tz(timezone).format('YYYY-MM-DD HH:mm');
         const end = moment.utc(endTime, true).tz(timezone).format('HH:mm');
         return `${start} - ${end}`;

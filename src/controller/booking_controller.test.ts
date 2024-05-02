@@ -62,7 +62,7 @@ describe('makeDurationString', () => {
     tests.forEach(({ name, args, want }) => {
         test(name, () => {
             // arrange
-            const ctl = new BookingController() as IBookingControllerTest;
+            const ctl = new BookingController() as IBookingController as IBookingControllerTest;
 
             // act
             const got = ctl.makeDurationString(args.startTime, args.endTime, args.timezone);
