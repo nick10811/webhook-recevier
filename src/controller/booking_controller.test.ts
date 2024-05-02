@@ -111,7 +111,7 @@ describe('makeObj', () => {
             length: 0,
             bookingId: 0,
             metadata: undefined,
-            status: '',
+            status: 'status',
             organizer: {
                 id: 0,
                 name: '',
@@ -125,6 +125,8 @@ describe('makeObj', () => {
         };
 
         const want = {
+            bookingId: '0',
+            status: 'status',
             greeting: 'Hello undefined',
             location: 'event-location',
             duration: '2024-04-12 13:45 - 14:00',

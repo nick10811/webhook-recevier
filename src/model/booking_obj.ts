@@ -1,4 +1,6 @@
 export interface BookingObj {
+    bookingId: string;
+    status: string;
     greeting: string;
     location: string;
     duration: string;
