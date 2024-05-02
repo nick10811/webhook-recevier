@@ -7,7 +7,7 @@ import {
     webhook,
     HTTPFetchError,
 } from '@line/bot-sdk';
-import * as lineConfig from './client/line_client';
+import * as lineConfig from './service/line_service';
 import controller from './controller';
 import { CalResponse } from './model';
 
