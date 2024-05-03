@@ -2,13 +2,9 @@ const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
 import Config from './config/config';
 import express, { Request, Response } from 'express';
-import {
-    middleware,
-    webhook,
-    HTTPFetchError,
-} from '@line/bot-sdk';
-import * as lineConfig from './service/line_service';
-import controller from './controller';
+import { middleware, webhook, HTTPFetchError } from '@line/bot-sdk';
+import { GoogleService, LineService, lineMiddlewareConfig, lineClientConfig } from './service';
+import controller, { BookingController, CalEventController, CalServices, SheetsController } from './controller';
 import { CalResponse } from './model';
 
 // create Express app
@@ -17,7 +13,7 @@ const app = express();
 // line webhook
 app.post(
     '/linewebhook',
-    middleware(lineConfig.middlewareConfig),
+    middleware(lineMiddlewareConfig),
     async (req: Request, res: Response): Promise<Response> => {
         console.log(`received a webhook event (line): ${JSON.stringify(req.body)}`)
 
@@ -31,11 +27,12 @@ app.post(
                     await controller.lineEvent(event);
                 } catch (err: unknown) {
                     if (err instanceof HTTPFetchError) {
+                        console.error('failed to handle line event:')
                         console.error(err.status);
                         console.error(err.headers.get('x-line-request-id'));
                         console.error(err.body);
                     } else if (err instanceof Error) {
-                        console.error(err);
+                        console.error(`failed to handle line event: ${err.message}`);
                     }
 
                     return res.status(500).json({ status: 'error' });
@@ -60,17 +57,22 @@ app.post(
         console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
 
         const callbackRequest: CalResponse = req.body;
-        const results = await Promise
-            .resolve(controller.calEvent(callbackRequest))
-            .then((result) => res.json(result))
+        const calEventController = new CalEventController({
+            line: new LineService(lineClientConfig),
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService())
+        } as CalServices);
+
+        const result = await calEventController
+            .handleEvent(callbackRequest)
             .catch((err) => {
-                console.error(err);
+                console.error(`failed to handle cal event: ${err}`);
                 return res.status(500).json({ status: 'error' });
             });
 
         return res.status(200).json({
             status: 'success',
-            results,
+            result,
         });
     });
 

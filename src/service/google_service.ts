@@ -8,7 +8,12 @@ export class GoogleService {
     private _sheets = google.sheets({ version: 'v4' });
 
     constructor() {
-        this._privateKey = config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+        if (config.ENVIRONMENT === 'prod') {
+            // ref: https://stackoverflow.com/a/78060606
+            this._privateKey = config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n");
+        } else {
+            this._privateKey = config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+        }
         this._clientEmail = config.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     }
 

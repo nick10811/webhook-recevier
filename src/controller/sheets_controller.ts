@@ -2,7 +2,7 @@ import { BookingObj, SheetsObj } from "../model";
 import { GoogleService } from "../service/google_service";
 
 const spreadsheetId = "1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ";
-const sheetName = "reservation";
+const sheetName = "reservations";
 
 export class SheetsController {
     private _srv: GoogleService;
@@ -22,22 +22,21 @@ export class SheetsController {
         };
     }
 
-    appendReservation(obj: BookingObj) {
+    async appendReservation(obj: BookingObj) {
         const reservation = this.makeObj(obj);
-
         try {
-            const _ = this._srv
+            await this._srv
                 .appendSheetData(
                     spreadsheetId,
                     sheetName,
                     [[reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]]);
         } catch (e) {
             if (e instanceof Error) {
-                console.error(e.message);
-                return new Error("failed to append reservation: " + e.message);
+                console.error(`failed to append reservation to sheets: ${e.message}`);
+                return new Error(`failed to append reservation to sheets: ${e.message}`);
             } else {
-                console.error(e);
-                return new Error("failed to append reservation");
+                console.error(`failed to append reservation to sheets: ${e}`);
+                return new Error('failed to append reservation to sheets');
             }
         }
     }

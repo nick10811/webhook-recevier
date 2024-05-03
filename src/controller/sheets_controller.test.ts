@@ -1,7 +1,8 @@
 import { describe, test, expect, vi } from "vitest";
 import { BookingObj, SheetsObj } from "../model";
-import sheetsController, { SheetsController } from "./sheets_controller";
+import { SheetsController } from "./sheets_controller";
 import { GoogleService } from "../service/google_service";
+import config from "../config/config";
 
 describe('SheetsController_makeObj', () => {
     test('ok', () => {
@@ -26,9 +27,10 @@ describe('SheetsController_makeObj', () => {
             timezone: 'timezone',
             status: 'confirmed',
         }
+        const controller = new SheetsController(new GoogleService());
 
         // act
-        const got = sheetsController.makeObj(arg);
+        const got = controller.makeObj(arg);
 
         // expect
         expect(got).toEqual(want);
@@ -36,7 +38,7 @@ describe('SheetsController_makeObj', () => {
 });
 
 describe('sheetsController_appendReservation', () => {
-    test('ok', () => {
+    test('ok', async () => {
         // arrange
         const arg: BookingObj = {
             bookingId: 'bookingId',
@@ -55,20 +57,20 @@ describe('sheetsController_appendReservation', () => {
 
         const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockImplementation((spreadsheetId, sheetName, values) => {
             expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
-            expect(sheetName).equal('reservation');
+            expect(sheetName).equal('reservations');
             expect(values).toEqual([['bookingId', 'whatever name', 'event-location', '2024-04-12 13:45 - 14:00', 'timezone', 'confirmed']]);
             return Promise.resolve({ spreadsheetId: "sheet-id" });
         });
 
         // act
-        const got = controller.appendReservation(arg);
+        const got = await controller.appendReservation(arg);
 
         // expect
         expect(appendSheetData).toHaveBeenCalledTimes(1);
         expect(got).toBeUndefined();
     });
 
-    test('GoogleService Error', () => {
+    test('GoogleService Error', async () => {
         // arrange
         const arg: BookingObj = {
             bookingId: 'whatever',
@@ -92,11 +94,36 @@ describe('sheetsController_appendReservation', () => {
             });
 
         // act
-        const got = controller.appendReservation(arg);
+        const got = await controller.appendReservation(arg);
 
         // expect
         expect(appendSheetData).toHaveBeenCalledTimes(1);
         expect(got).toBeInstanceOf(Error);
-        expect((got as Error).message).equal('failed to append reservation: whatever');
+        expect((got as Error).message).equal('failed to append reservation to sheets: whatever');
+    });
+
+    test.skip('real case', { timeout: 10000}, async () => {
+        // arrange
+        const arg: BookingObj = {
+            bookingId: '0000001',
+            status: 'status',
+            greeting: 'Hello undefined',
+            location: 'event-location',
+            duration: '2024-04-12 13:45 - 14:00',
+            timezone: 'timezone',
+            attendee: 'unknown name',
+            rescheduleURI: 'https://example.com/reschedule/uid',
+            cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
+        };
+
+        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = "whatever";
+        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "whatever";
+        const controller = new SheetsController(new GoogleService());
+
+        // act
+        const got = await controller.appendReservation(arg);
+
+        // expect
+        expect(got).toBeUndefined();
     });
 });
