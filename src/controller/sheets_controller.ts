@@ -40,6 +40,31 @@ export class SheetsController {
             }
         }
     }
+
+    async findRowIndexOfReservation(bookingId: string) {
+        try {
+            const reservations: string[][] = await this._srv.getSheetData(spreadsheetId, sheetName) as string[][];
+
+            // retrieve the row number of the reservation
+            let row = -1;
+            for (let i = 1; i < reservations.length; i++) {
+                if (reservations[i][0] === bookingId) {
+                    row = i;
+                    break;
+                }
+            }
+            return row;
+            
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error(`failed to find reservation in sheets: ${e.message}`);
+                return new Error(`failed to find reservation in sheets: ${e.message}`);
+            } else {
+                console.error(`failed to find reservation in sheets: ${e}`);
+                return new Error('failed to find reservation in sheets');
+            }
+        }
+    }
 }
 
 export default new SheetsController(new GoogleService());

@@ -127,3 +127,84 @@ describe('sheetsController_appendReservation', () => {
         expect(got).toBeUndefined();
     });
 });
+
+describe('SheetsController.findRowIndexOfReservation_Ok', () => {
+    type Args = {
+        bookingId: string;
+        sheetData: string[][];
+    };
+
+    type TestCase = {
+        name: string,
+        args: Args,
+        want: number;
+    };
+
+    const tests: TestCase[] = [
+        {
+            name: 'ok: bookingId is found',
+            args: {
+                bookingId: '002',
+                sheetData: [
+                    ['001', 'whatever'],
+                    ['002', 'whatever'],
+                    ['003', 'whatever'],
+                ],
+            },
+            want: 1,
+        },
+        {
+            name: 'ok: bookingId is not found',
+            args: {
+                bookingId: '004',
+                sheetData: [
+                    ['001', 'whatever'],
+                    ['002', 'whatever'],
+                    ['003', 'whatever'],
+                ],
+            },
+            want: -1,
+        },
+    ];
+
+    tests.forEach(({ name, args, want }) => {
+        test(name, async () => {
+            // arrange
+            const mockGoogleService = new GoogleService();
+            const controller = new SheetsController(mockGoogleService);
+
+            const getSheetData = vi.spyOn(mockGoogleService, 'getSheetData').mockImplementation((spreadsheetId, sheetName) => {
+                expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+                expect(sheetName).equal('reservations');
+                return Promise.resolve(args.sheetData);
+            });
+
+            // act
+            const got = await controller.findRowIndexOfReservation(args.bookingId);
+
+            // expect
+            expect(getSheetData).toHaveBeenCalledTimes(1);
+            expect(got).equal(want);
+        });
+    });
+});
+
+describe('SheetsController.findRowIndexOfReservation_Error', () => {
+    test('GoogleService Error', async () => {
+        // arrange
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const getSheetData = vi
+            .spyOn(mockGoogleService, 'getSheetData')
+            .mockImplementation(() => { throw new Error('whatever') });
+
+        // act
+        const got = await controller.findRowIndexOfReservation('whatever');
+
+        // expect
+        expect(getSheetData).toHaveBeenCalledTimes(1);
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('failed to find reservation in sheets: whatever');
+    });
+});
