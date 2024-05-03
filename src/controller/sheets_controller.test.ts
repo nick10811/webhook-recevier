@@ -55,7 +55,7 @@ describe('sheetsController_appendReservation', () => {
 
         const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockImplementation((spreadsheetId, sheetName, values) => {
             expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
-            expect(sheetName).equal('reservation');
+            expect(sheetName).equal('reservations');
             expect(values).toEqual([['bookingId', 'whatever name', 'event-location', '2024-04-12 13:45 - 14:00', 'timezone', 'confirmed']]);
             return Promise.resolve({ spreadsheetId: "sheet-id" });
         });
