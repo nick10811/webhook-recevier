@@ -1,4 +1,4 @@
-import { describe, test, assert, vi } from 'vitest';
+import { describe, test, assert, expect } from 'vitest';
 import { GoogleService } from './google_service';
 import config from '../config/config';
 import { JWTInput } from 'google-auth-library/build/src/auth/credentials';
@@ -56,6 +56,30 @@ describe('GoogleService_appendSheetData', () => {
 
         // assert
         assert.equal(got.spreadsheetId, "whatever");
+    });
+
+});
+
+describe('GoogleService.updateSheetRow', () => {
+    test.skip('skip ci for real case', async () => {
+        // arrange
+        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        const srv = new GoogleService();
+        const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
+        const sheetName = 'reservations';
+        const range = 'A2';
+        const values = ['Updated1', 'Updated2', 'Updated3'];
+
+        // act
+        const got = await srv.updateSheetRow(spreadsheetId, sheetName, range, values);
+
+        // expect
+        expect(got.spreadsheetId).toBe("1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ");
+        expect(got.updatedCells).toBe(3);
+        expect(got.updatedColumns).toBe(3);
+        expect(got.updatedRange).toBe("reservations!A2:C2");
+        expect(got.updatedRows).toBe(1);
     });
 
 });

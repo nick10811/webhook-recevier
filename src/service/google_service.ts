@@ -51,6 +51,20 @@ export class GoogleService {
         });
         return resp.data;
     }
+
+    async updateSheetRow(spreadsheetId: string, sheetName: string, range: string, values: string[]) {
+        const auth = this.getAuthToken();
+        const resp = await this._sheets.spreadsheets.values.update({
+            auth: auth,
+            spreadsheetId: spreadsheetId,
+            range: sheetName + '!' + range,
+            valueInputOption: 'RAW',
+            requestBody: {
+                values: [values]
+            }
+        });
+        return resp.data;
+    }
 }
 
 export default new GoogleService();
