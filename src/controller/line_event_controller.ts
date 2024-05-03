@@ -1,53 +1,66 @@
-import service from '../service';
+import { LineService } from '../service';
 import template from '../template';
-import {
-    MessageAPIResponseBase,
-    webhook,
-    Message
-} from '@line/bot-sdk';
+import { webhook, Message, messagingApi } from '@line/bot-sdk';
 
-// push notification
-function pushMessage(userID: string) {
-    service.line.pushMessage({
-        to: userID,
-        messages: [{ type: 'text', text: 'Hello, This is a reminder message.' }],
-    });
+export interface LineEventService {
+    line: LineService;
 }
 
-const isTextEvent = (event: any): event is webhook.MessageEvent & { message: webhook.TextMessageContent } => {
-    return event.type === 'message' && event.message && event.message.type === 'text';
-};
+export interface ILineEventController {
+    handleText(event: webhook.Event): Promise<messagingApi.ReplyMessageResponse | undefined>;
+    pushMessage(userID: string): void;
+}
 
-const lineEventController = async (event: webhook.Event): Promise<MessageAPIResponseBase | undefined> => {
-    if (!isTextEvent(event)) {
-        return;
+export class LineEventController implements ILineEventController {
+    private _srv: LineEventService;
+
+    constructor(srv: LineEventService) {
+        this._srv = srv
     }
 
-    const lineID = event.source?.userId;
-    const sentMessage = event.message.text;
-    var replyMessage: Message;
+    private isTextEvent = (event: any): event is webhook.MessageEvent & { message: webhook.TextMessageContent } => {
+        if (event.type === undefined || event.message === undefined) {
+            return false;
+        }
+        return event.type === 'message' && event.message && event.message.type === 'text';
+    };
 
-    if (sentMessage.toLowerCase() === 'book') {
-        const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
-        replyMessage = template.bookingSystem(uri) as Message;
-
-    } else {
-        // create an echoing text message
-        replyMessage = { type: 'text', text: `Hello "${lineID}" just said: "${sentMessage}"` };
-        console.log(`"${lineID}" just said: "${sentMessage}"`);
-
-        // send a notification after 5s
-        setTimeout(() => {
-            pushMessage(lineID as string);
-        }, 5000);
-
+    async pushMessage(userID: string) {
+        this._srv.line.pushMessage({
+            to: userID,
+            messages: [{ type: 'text', text: 'Hello, This is a reminder message.' }],
+        });
     }
 
-    // use reply API
-    await service.line.replyMessage({
-        replyToken: event.replyToken as string,
-        messages: [replyMessage],
-    });
-};
+    async handleText(event: webhook.Event) {
+        if (!this.isTextEvent(event)) {
+            return Promise.resolve(undefined);
+        }
 
-export default lineEventController;
+        const lineID = event.source?.userId;
+        const sentMessage = event.message.text;
+        var replyMessage: Message;
+
+        if (sentMessage.toLowerCase() === 'book') {
+            const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
+            replyMessage = template.bookingSystem(uri) as Message;
+
+        } else {
+            // create an echoing text message
+            replyMessage = { type: 'text', text: `Hello "${lineID}" just said: "${sentMessage}"` };
+            console.log(`"${lineID}" just said: "${sentMessage}"`);
+
+            // send a notification after 5s
+            setTimeout(() => {
+                this.pushMessage(lineID as string);
+            }, 5000);
+
+        }
+
+        // use reply API
+        return this._srv.line.replyMessage({
+            replyToken: event.replyToken as string,
+            messages: [replyMessage],
+        });
+    }
+}
