@@ -37,7 +37,7 @@ export class CalEventController implements ICalEventController {
         }
     }
 
-    private bookingCreated(payload: Payload) {
+    private async bookingCreated(payload: Payload) {
         const lineID = this.getLineID(payload);
 
         if (!lineID) {
@@ -45,7 +45,7 @@ export class CalEventController implements ICalEventController {
         }
 
         const bookingObj = this._srv.booking.makeObj(payload);
-        const err = this._srv.sheets.appendReservation(bookingObj);
+        const err = await this._srv.sheets.appendReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to append reservation to sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to append reservation to sheet: ${err.message}`));

@@ -22,11 +22,10 @@ export class SheetsController {
         };
     }
 
-    appendReservation(obj: BookingObj) {
+    async appendReservation(obj: BookingObj) {
         const reservation = this.makeObj(obj);
-
         try {
-            const _ = this._srv
+            await this._srv
                 .appendSheetData(
                     spreadsheetId,
                     sheetName,

@@ -96,7 +96,7 @@ describe('CalEventController_bookingCreated_Error', () => {
                 makeObjTimes: 1,
                 appendReservationTimes: 1
             },
-            wantErr: 'failed to append reservation to sheet: whatever',
+            wantErr: 'whatever',
         }
     ];
 
@@ -113,7 +113,7 @@ describe('CalEventController_bookingCreated_Error', () => {
                 .mockReturnValue({} as BookingObj);
             const appendReservation = vi
                 .spyOn(srv.sheets, 'appendReservation')
-                .mockReturnValue(new Error('whatever'));
+                .mockRejectedValue(new Error('whatever'));
 
             const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
@@ -146,7 +146,7 @@ describe('CalEventController_bookingCreated_OK', () => {
             .mockReturnValue({} as BookingObj);
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
-            .mockReturnValue(undefined);
+            .mockResolvedValue(undefined);
         const pushMessage = vi
             .spyOn(srv.line, 'pushMessage')
             .mockResolvedValue({} as any);
