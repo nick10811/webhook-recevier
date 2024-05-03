@@ -1,6 +1,6 @@
 import service, { LineService } from '../service';
 import template from '../template';
-import { MessageAPIResponseBase, webhook, Message } from '@line/bot-sdk';
+import { MessageAPIResponseBase, webhook, Message, messagingApi } from '@line/bot-sdk';
 
 // push notification
 function pushMessage(userID: string) {
@@ -53,7 +53,7 @@ export interface LineEventService {
 }
 
 export interface ILineEventController {
-    handleText(event: webhook.Event): Promise<MessageAPIResponseBase | undefined>;
+    handleText(event: webhook.Event): Promise<messagingApi.ReplyMessageResponse | undefined>;
     pushMessage(userID: string): void;
 }
 
@@ -78,7 +78,7 @@ export class LineEventController implements ILineEventController {
         });
     }
 
-    async handleText(event: webhook.Event): Promise<MessageAPIResponseBase | undefined> {
+    async handleText(event: webhook.Event) {
         if (!this.isTextEvent(event)) {
             return Promise.resolve(undefined);
         }
@@ -104,7 +104,7 @@ export class LineEventController implements ILineEventController {
         }
 
         // use reply API
-        await this._srv.line.replyMessage({
+        return this._srv.line.replyMessage({
             replyToken: event.replyToken as string,
             messages: [replyMessage],
         });
