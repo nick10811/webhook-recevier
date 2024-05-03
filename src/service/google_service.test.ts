@@ -85,3 +85,22 @@ describe('GoogleService.updateSheetRow', () => {
         expect(got.updatedRows).toBe(1);
     });
 });
+
+describe('GoogleService.deleteSheetRow', () => {
+    test.skip('skip ci for real case', async () => {
+        // arrange
+        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        const srv = new GoogleService();
+        const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
+        const sheetId = 0;
+        const indexOfRow = 3;
+
+        // act
+        const got = await srv.deleteSheetRow(spreadsheetId, sheetId, indexOfRow);
+
+        // expect
+        expect(got.spreadsheetId).toBe('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+        expect(got.replies).not.toBeUndefined();
+    });
+});
