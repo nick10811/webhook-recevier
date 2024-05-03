@@ -4,7 +4,7 @@ import Config from './config/config';
 import express, { Request, Response } from 'express';
 import { middleware, webhook, HTTPFetchError } from '@line/bot-sdk';
 import { GoogleService, LineService, lineMiddlewareConfig, lineClientConfig } from './service';
-import controller, { BookingController, CalEventController, CalServices, SheetsController } from './controller';
+import { BookingController, CalEventController, CalServices, LineEventController, SheetsController } from './controller';
 import { CalResponse } from './model';
 
 // create Express app
@@ -24,7 +24,10 @@ app.post(
         const results = await Promise.all(
             events.map(async (event: webhook.Event) => {
                 try {
-                    await controller.lineEvent(event);
+                    const lineEventController = new LineEventController({
+                        line: new LineService(lineClientConfig),
+                    });
+                    await lineEventController.handleText(event);
                 } catch (err: unknown) {
                     if (err instanceof HTTPFetchError) {
                         console.error('failed to handle line event:')
