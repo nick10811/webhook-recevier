@@ -97,6 +97,6 @@ describe('sheetsController_appendReservation', () => {
         // expect
         expect(appendSheetData).toHaveBeenCalledTimes(1);
         expect(got).toBeInstanceOf(Error);
-        expect((got as Error).message).equal('failed to append reservation: whatever');
+        expect((got as Error).message).equal('failed to append reservation to sheets: whatever');
     });
 });

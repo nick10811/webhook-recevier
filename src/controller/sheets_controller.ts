@@ -33,11 +33,11 @@ export class SheetsController {
                     [[reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]]);
         } catch (e) {
             if (e instanceof Error) {
-                console.error(e.message);
-                return new Error("failed to append reservation: " + e.message);
+                console.error(`failed to append reservation to sheets: ${e.message}`);
+                return new Error(`failed to append reservation to sheets: ${e.message}`);
             } else {
-                console.error(e);
-                return new Error("failed to append reservation");
+                console.error(`failed to append reservation to sheets: ${e}`);
+                return new Error('failed to append reservation to sheets');
             }
         }
     }

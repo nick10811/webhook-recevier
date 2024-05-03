@@ -27,11 +27,12 @@ app.post(
                     await controller.lineEvent(event);
                 } catch (err: unknown) {
                     if (err instanceof HTTPFetchError) {
+                        console.error('failed to handle line event:')
                         console.error(err.status);
                         console.error(err.headers.get('x-line-request-id'));
                         console.error(err.body);
                     } else if (err instanceof Error) {
-                        console.error(err);
+                        console.error(`failed to handle line event: ${err.message}`);
                     }
 
                     return res.status(500).json({ status: 'error' });
@@ -65,7 +66,7 @@ app.post(
         const result = await calEventController
             .handleEvent(callbackRequest)
             .catch((err) => {
-                console.error(err);
+                console.error(`failed to handle cal event: ${err}`);
                 return res.status(500).json({ status: 'error' });
             });
 
