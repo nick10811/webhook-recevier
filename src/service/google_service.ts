@@ -65,6 +65,27 @@ export class GoogleService {
         });
         return resp.data;
     }
+
+    async deleteSheetRow(spreadsheetId: string, sheetId: number, indexOfRow: number) {
+        const auth = this.getAuthToken();
+        const resp = await this._sheets.spreadsheets.batchUpdate({
+            auth: auth,
+            spreadsheetId: spreadsheetId,
+            requestBody: {
+                requests: [{
+                    deleteDimension: {
+                        range: {
+                            sheetId: sheetId,
+                            dimension: 'ROWS',
+                            startIndex: indexOfRow,
+                            endIndex: indexOfRow + 1
+                        }
+                    }
+                }]
+            }
+        });
+        return resp.data;
+    }
 }
 
 export default new GoogleService();
