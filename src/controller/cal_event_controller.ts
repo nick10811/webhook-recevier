@@ -1,9 +1,9 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
-import template from "../template";
-import { BookingController } from "./booking_controller";
+import template from '../template';
+import { BookingController } from './booking_controller';
 import { CalResponse, Payload } from '../model';
 import { SheetsController } from './sheets_controller';
-import { LineService } from '../service/line_service';
+import { LineService } from '../service';
 
 export interface CalServices {
     line: LineService;
