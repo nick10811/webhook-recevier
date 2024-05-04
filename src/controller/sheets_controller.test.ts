@@ -197,7 +197,7 @@ describe('SheetsController.findRowIndexOfReservation_Error', () => {
 
         const getSheetData = vi
             .spyOn(mockGoogleService, 'getSheetData')
-            .mockImplementation(() => { throw new Error('whatever') });
+            .mockRejectedValue(new Error('whatever'));
 
         // act
         const got = await controller.findRowIndexOfReservation('whatever');
