@@ -4,7 +4,7 @@ import { SheetsController } from './sheets_controller';
 import { GoogleService } from '../service';
 import Config from '../config';
 
-describe('SheetsController_makeObj', () => {
+describe('SheetsController.makeObj', () => {
     test('ok', () => {
         // arrange
         const arg: BookingObj = {
@@ -37,7 +37,7 @@ describe('SheetsController_makeObj', () => {
     });
 });
 
-describe('sheetsController_appendReservation', () => {
+describe('SheetsController.appendReservation', () => {
     test('ok', async () => {
         // arrange
         const arg: BookingObj = {
@@ -102,7 +102,7 @@ describe('sheetsController_appendReservation', () => {
         expect((got as Error).message).equal('failed to append reservation to sheets: whatever');
     });
 
-    test.skip('real case', { timeout: 10000}, async () => {
+    test.skip('skip for real case', { timeout: 10000 }, async () => {
         // arrange
         const arg: BookingObj = {
             bookingId: '0000001',
