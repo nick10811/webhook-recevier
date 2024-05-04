@@ -69,7 +69,7 @@ export class SheetsController {
 
     async deleteReservation(bookingId: string) {
         const index = await this.findRowIndexOfReservation(bookingId);
-        if (index instanceof Error || index === -1) {
+        if (index instanceof Error || index < 0) {
             return new Error('reservation not found');
         }
 
@@ -92,7 +92,7 @@ export class SheetsController {
         }
 
         const index = await this.findRowIndexOfReservation(obj.rescheduleId);
-        if (index instanceof Error || index === -1) {
+        if (index instanceof Error || index < 0) {
             return new Error('reservation not found');
         }
 
