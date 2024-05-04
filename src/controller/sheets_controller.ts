@@ -3,6 +3,7 @@ import { GoogleService } from '../service';
 
 const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
 const sheetName = 'reservations';
+const sheetId = 0;
 
 export class SheetsController {
     private _srv: GoogleService;
@@ -62,6 +63,27 @@ export class SheetsController {
             } else {
                 console.error(`failed to find reservation in sheets: ${e}`);
                 return new Error('failed to find reservation in sheets');
+            }
+        }
+    }
+
+    async deleteReservation(bookingId: string) {
+        const index = await this.findRowIndexOfReservation(bookingId);
+        if (index instanceof Error) {
+            return new Error('reservation not found');
+        } else if (index === -1) {
+            return new Error('reservation not found');
+        }
+
+        try {
+            await this._srv.deleteSheetRow(spreadsheetId, sheetId, index);
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error(`failed to delete reservation in sheets: ${e.message}`);
+                return new Error(`failed to delete reservation in sheets: ${e.message}`);
+            } else {
+                console.error(`failed to delete reservation in sheets: ${e}`);
+                return new Error('failed to delete reservation in sheets');
             }
         }
     }

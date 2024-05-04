@@ -208,3 +208,91 @@ describe('SheetsController.findRowIndexOfReservation_Error', () => {
         expect((got as Error).message).equal('failed to find reservation in sheets: whatever');
     });
 });
+
+describe('SheetsController.deleteReservation_Ok', () => {
+    test('ok', async () => {
+        // arrange
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(1);
+        const deleteSheetRow = vi.spyOn(mockGoogleService, 'deleteSheetRow').mockImplementation((spreadsheetId, sheetId, indexOfRow) => {
+            expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+            expect(sheetId).equal(0);
+            expect(indexOfRow).equal(1);
+            return Promise.resolve({ spreadsheetId: 'whatever' });
+        });
+
+        // act
+        const got = await controller.deleteReservation('whatever');
+
+        // expect
+        expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+        expect(deleteSheetRow).toHaveBeenCalledTimes(1);
+        expect(got).toBeUndefined();
+    });
+});
+
+describe('SheetsController.deleteReservation_Error', () => {
+    type Arg = {
+        bookingId: string;
+        findRowIndexOfReservation: number | Error;
+        deleteReservationTimes: number;
+    };
+    
+    type TestCase = {
+        name: string;
+        arg: Arg;
+        wantErr: string;
+    };
+
+    const tests: TestCase[] = [
+        {
+            name: 'findRowIndexOfReservation Error',
+            arg: {
+                bookingId: 'whatever',
+                findRowIndexOfReservation: new Error('whatever'),
+                deleteReservationTimes: 0,
+            },
+            wantErr: 'reservation not found',
+        },
+        {
+            name: 'reservation not found',
+            arg: {
+                bookingId: 'whatever',
+                findRowIndexOfReservation: -1,
+                deleteReservationTimes: 0,
+            },
+            wantErr: 'reservation not found',
+        },
+        {
+            name: 'GoogleService Error',
+            arg: {
+                bookingId: 'whatever',
+                findRowIndexOfReservation: 1,
+                deleteReservationTimes: 1,
+            },
+            wantErr: 'failed to delete reservation in sheets: whatever',
+        },
+    ];
+
+    tests.forEach(({ name, arg, wantErr }) => {
+        test(name, async () => {
+            // arrange
+            const mockGoogleService = new GoogleService();
+            const controller = new SheetsController(mockGoogleService);
+
+            const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(arg.findRowIndexOfReservation);
+            const deleteSheetRow = vi.spyOn(mockGoogleService, 'deleteSheetRow').mockImplementation(() => { throw new Error('whatever') });
+
+            // act
+            const got = await controller.deleteReservation(arg.bookingId);
+
+            // expect
+            expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+            expect(deleteSheetRow).toHaveBeenCalledTimes(arg.deleteReservationTimes);
+            expect(got).toBeInstanceOf(Error);
+            expect((got as Error).message).equal(wantErr);
+        });
+    });
+});
