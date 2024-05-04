@@ -9,6 +9,7 @@ import { ClientConfig } from '@line/bot-sdk';
 interface ICalEventControllerTest extends ICalEventController {
     getLineID(payload: Payload): string | undefined;
     bookingCreated(payload: Payload);
+    bookingCancelled(payload: Payload);
 }
 
 describe('CalEventController_getLineID_InputError', () => {
@@ -161,6 +162,42 @@ describe('CalEventController_bookingCreated_OK', () => {
         // expect
         expect(makeObj).toHaveBeenCalledTimes(1);
         expect(appendReservation).toHaveBeenCalledTimes(1);
+        expect(pushMessage).toHaveBeenCalledTimes(1);
+        expect(got).toMatchObject({});
+    });
+});
+
+describe('CalEventController.bookingCancelled_OK', () => {
+    test('ok', async () => {
+        // arrange
+        const srv: CalServices = {
+            line: new LineService({} as ClientConfig),
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+        const makeObj = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+        const deleteReservation = vi
+            .spyOn(srv.sheets, 'deleteReservation')
+            .mockImplementation((bookingId) => {
+                expect(bookingId).toBe('book-id');
+                return Promise.resolve(undefined);
+            });
+        const pushMessage = vi
+            .spyOn(srv.line, 'pushMessage')
+            .mockResolvedValue({} as any);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
+
+        const payload = { responses: { lineid: { value: 'whatever' } } };
+
+        // act
+        const got = await ctl.bookingCancelled(payload as Payload);
+
+        // expect
+        expect(makeObj).toHaveBeenCalledTimes(1);
+        expect(deleteReservation).toHaveBeenCalledTimes(1);
         expect(pushMessage).toHaveBeenCalledTimes(1);
         expect(got).toMatchObject({});
     });

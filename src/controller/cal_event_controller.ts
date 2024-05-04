@@ -57,7 +57,7 @@ export class CalEventController implements ICalEventController {
         });
     }
 
-    private bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined> {
+    private async bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined> {
         const lineID = this.getLineID(payload);
 
         if (!lineID) {
@@ -65,6 +65,11 @@ export class CalEventController implements ICalEventController {
         }
 
         const bookingObj = this._srv.booking.makeObj(payload);
+        const err = await this._srv.sheets.deleteReservation(bookingObj.bookingId);
+        if (err instanceof Error) {
+            console.error(`failed to delete reservation from sheet: ${err.message}`);
+            return Promise.reject(new Error(`failed to delete reservation from sheet: ${err.message}`));
+        }
 
         return this._srv.line.pushMessage({
             to: lineID,
