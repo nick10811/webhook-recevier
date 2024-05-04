@@ -296,3 +296,47 @@ describe('SheetsController.deleteReservation_Error', () => {
         });
     });
 });
+
+describe('SheetsController.updateReservation_Ok', () => {
+    test('ok', async () => {
+        // arrange
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const obj: BookingObj = {
+            bookingId: 'booking-id',
+            status: 'updated',
+            greeting: 'greeting',
+            location: 'location',
+            duration: 'duration',
+            timezone: 'timezone',
+            attendee: 'attendee',
+            rescheduleURI: 'reschedule-uri',
+            cancelURI: 'cancel-uri',
+        };
+
+        const findRowIndexOfReservation = vi
+            .spyOn(controller, 'findRowIndexOfReservation')
+            .mockImplementation((bookingId) => {
+                expect(bookingId).equal('booking-id');
+                return Promise.resolve(1);
+            });
+        const updateSheetRow = vi
+            .spyOn(mockGoogleService, 'updateSheetRow')
+            .mockImplementation((spreadsheetId, sheetName, range, values) => {
+                expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+                expect(sheetName).equal('reservations');
+                expect(range).equal('A1');
+                expect(values).toEqual(['booking-id', 'attendee', 'location', 'duration', 'timezone', 'updated']);
+                return Promise.resolve({ spreadsheetId: 'whatever' });
+            });
+
+        // act
+        const got = await controller.updateReservation(obj);
+
+        // expect
+        expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+        expect(updateSheetRow).toHaveBeenCalledTimes(1);
+        expect(got).toBeUndefined();
+    });
+});

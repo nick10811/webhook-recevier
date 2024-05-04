@@ -87,6 +87,35 @@ export class SheetsController {
             }
         }
     }
+
+    async updateReservation(obj: BookingObj) {
+        const index = await this.findRowIndexOfReservation(obj.bookingId);
+        if (index instanceof Error) {
+            return new Error('reservation not found');
+        } else if (index === -1) {
+            return new Error('reservation not found');
+        }
+
+        const reservation = this.makeObj(obj);
+        try {
+            await this._srv
+                .updateSheetRow(
+                    spreadsheetId,
+                    sheetName,
+                    `A${index}`,
+                    [reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]
+                )
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error(`failed to update reservation in sheets: ${e.message}`);
+                return new Error(`failed to update reservation in sheets: ${e.message}`);
+            } else {
+                console.error(`failed to update reservation in sheets: ${e}`);
+                return new Error('failed to update reservation in sheets');
+            }
+        }
+
+    }
 }
 
 export default new SheetsController(new GoogleService());
