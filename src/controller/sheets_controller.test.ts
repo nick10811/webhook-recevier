@@ -1,8 +1,8 @@
-import { describe, test, expect, vi } from "vitest";
-import { BookingObj, SheetsObj } from "../model";
-import { SheetsController } from "./sheets_controller";
-import { GoogleService } from "../service/google_service";
-import config from "../config/config";
+import { describe, test, expect, vi } from 'vitest';
+import { BookingObj, SheetsObj } from '../model';
+import { SheetsController } from './sheets_controller';
+import { GoogleService } from '../service';
+import Config from '../config';
 
 describe('SheetsController_makeObj', () => {
     test('ok', () => {
@@ -59,7 +59,7 @@ describe('sheetsController_appendReservation', () => {
             expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
             expect(sheetName).equal('reservations');
             expect(values).toEqual([['bookingId', 'whatever name', 'event-location', '2024-04-12 13:45 - 14:00', 'timezone', 'confirmed']]);
-            return Promise.resolve({ spreadsheetId: "sheet-id" });
+            return Promise.resolve({ spreadsheetId: 'sheet-id' });
         });
 
         // act
@@ -116,8 +116,8 @@ describe('sheetsController_appendReservation', () => {
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
         };
 
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = "whatever";
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "whatever";
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const controller = new SheetsController(new GoogleService());
 
         // act

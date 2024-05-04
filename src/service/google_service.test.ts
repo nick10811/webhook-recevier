@@ -1,13 +1,13 @@
 import { describe, test, expect } from 'vitest';
 import { GoogleService } from './google_service';
-import config from '../config/config';
+import Config from '../config';
 import { JWTInput } from 'google-auth-library/build/src/auth/credentials';
 
 describe('GoogleService.getAuthToken', () => {
     test('ok', async () => {
         // arrange
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const srv = new GoogleService();
 
         // act
@@ -22,8 +22,8 @@ describe('GoogleService.getAuthToken', () => {
 describe('GoogleService.getSheetData', () => {
     test.skip('skip ci for real case', async () => {
         // arrange
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const srv = new GoogleService();
         const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
         const sheetName = 'reservations';
@@ -46,8 +46,8 @@ describe('GoogleService.getSheetData', () => {
 describe('GoogleService_appendSheetData', () => {
     test.skip('skip ci for real case', async () => {
         // arrange
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const srv = new GoogleService();
         const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
         const sheetName = 'reservations';
@@ -66,8 +66,8 @@ describe('GoogleService_appendSheetData', () => {
 describe('GoogleService.updateSheetRow', () => {
     test.skip('skip ci for real case', async () => {
         // arrange
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const srv = new GoogleService();
         const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
         const sheetName = 'reservations';
@@ -89,8 +89,8 @@ describe('GoogleService.updateSheetRow', () => {
 describe('GoogleService.deleteSheetRow', () => {
     test.skip('skip ci for real case', async () => {
         // arrange
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const srv = new GoogleService();
         const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
         const sheetId = 0;

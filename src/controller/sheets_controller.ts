@@ -1,8 +1,8 @@
-import { BookingObj, SheetsObj } from "../model";
-import { GoogleService } from "../service/google_service";
+import { BookingObj, SheetsObj } from '../model';
+import { GoogleService } from '../service';
 
-const spreadsheetId = "1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ";
-const sheetName = "reservations";
+const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
+const sheetName = 'reservations';
 
 export class SheetsController {
     private _srv: GoogleService;
