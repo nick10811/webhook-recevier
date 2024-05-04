@@ -27,10 +27,11 @@ export class CalEventController implements ICalEventController {
         const payload = body.payload;
         switch (event.toUpperCase()) {
             case 'BOOKING_CREATED':
-            case 'BOOKING_RESCHEDULED':
                 return this.bookingCreated(payload);
             case 'BOOKING_CANCELLED':
                 return this.bookingCancelled(payload);
+            case 'BOOKING_RESCHEDULED':
+                return this.bookingRescheduled(payload);
             default:
                 console.log(`received an unknown event: ${JSON.stringify(body)}`);
                 return Promise.reject({ status: 400, message: 'unknown event: ' + event });
@@ -54,6 +55,26 @@ export class CalEventController implements ICalEventController {
         return this._srv.line.pushMessage({
             to: lineID,
             messages: [template.bookingCreated(bookingObj, 'Booking Created')],
+        });
+    }
+
+    private async bookingRescheduled(payload: Payload) {
+        const lineID = this.getLineID(payload);
+
+        if (!lineID) {
+            return Promise.reject(new Error('line id is null'));
+        }
+
+        const bookingObj = this._srv.booking.makeObj(payload);
+        const err = await this._srv.sheets.updateReservation(bookingObj);
+        if (err instanceof Error) {
+            console.error(`failed to update reservation to sheet: ${err.message}`);
+            return Promise.reject(new Error(`failed to update reservation to sheet: ${err.message}`));
+        }
+
+        return this._srv.line.pushMessage({
+            to: lineID,
+            messages: [template.bookingCreated(bookingObj, 'Booking Rescheduled')],
         });
     }
 
