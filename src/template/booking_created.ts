@@ -1,7 +1,7 @@
 import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
 import { BookingObj } from "../model";
 
-export default function bookingCreated(obj: BookingObj): FlexMessage {
+export default function bookingCreated(obj: BookingObj, title: string): FlexMessage {
     return {
         "type": "flex",
         "altText": "Booking System",
@@ -13,7 +13,7 @@ export default function bookingCreated(obj: BookingObj): FlexMessage {
                 "contents": [
                     {
                         "type": "text",
-                        "text": "Booking Confirmed",
+                        "text": title,
                         "weight": "bold",
                         "size": "xl"
                     },

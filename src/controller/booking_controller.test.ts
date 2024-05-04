@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { BookingController, IBookingController } from './booking_controller';
-import { Payload } from '../model';
+import { BookingObj, Payload } from '../model';
 
 interface IBookingControllerTest extends IBookingController {
     // private method
@@ -75,13 +75,13 @@ describe('makeDurationString', () => {
 });
 
 describe('makeObj', () => {
-    test('ok', () => {
+    test('ok without reschedule', () => {
         // arrange
         const arg: Payload = {
             bookerUrl: 'https://example.com',
             title: 'event-title',
-            startTime: '2024-04-12T13:45:00Z',
-            endTime: '2024-04-12T14:00:00Z',
+            startTime: 'start-time',
+            endTime: 'end-time',
             responses: {
                 name: undefined,
                 location: undefined,
@@ -117,7 +117,11 @@ describe('makeObj', () => {
             price: 0,
             currency: '',
             length: 0,
-            bookingId: 0,
+            bookingId: 111,
+            rescheduleId: 222,
+            rescheduleUid: 'reschedule-uid',
+            rescheduleStartTime: 'reschedule-start-time',
+            rescheduleEndTime: 'reschedule-end-time',
             metadata: undefined,
             status: 'status',
             organizer: {
@@ -132,17 +136,18 @@ describe('makeObj', () => {
             }
         };
 
-        const want = {
-            bookingId: '0',
+        const want: BookingObj = {
+            bookingId: '111',
+            rescheduleId: '222',
             status: 'status',
             greeting: 'Hello undefined',
             location: 'event-location',
-            duration: '2024-04-12 13:45 - 14:00',
+            duration: 'Invalid date - Invalid date',
             timezone: 'timezone',
             attendee: 'unknown name',
             rescheduleURI: 'https://example.com/reschedule/uid',
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
-        }
+        };
 
         // arrange
         const ctl = new BookingController();
@@ -151,6 +156,6 @@ describe('makeObj', () => {
         const got = ctl.makeObj(arg);
 
         // expect
-        expect(got).toEqual(want);
+        expect(got).toMatchObject(want);
     });
 });

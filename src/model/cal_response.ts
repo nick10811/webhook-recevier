@@ -38,6 +38,10 @@ export interface Payload {
     currency: string;
     length: number;
     bookingId: number;
+    rescheduleId: number | undefined;
+    rescheduleUid: string | undefined;
+    rescheduleStartTime: string | undefined;
+    rescheduleEndTime: string | undefined;
     metadata: Metadata | undefined;
     status: string;
 }

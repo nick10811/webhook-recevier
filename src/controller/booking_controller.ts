@@ -13,6 +13,7 @@ export class BookingController implements IBookingController {
 
         return {
             bookingId: payload.bookingId.toString(),
+            rescheduleId: payload.rescheduleId?.toString() ?? undefined,
             status: payload.status,
             greeting: "Hello " + payload.responses.name?.value,
             location: payload.location,

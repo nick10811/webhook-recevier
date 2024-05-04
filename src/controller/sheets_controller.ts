@@ -69,7 +69,7 @@ export class SheetsController {
 
     async deleteReservation(bookingId: string) {
         const index = await this.findRowIndexOfReservation(bookingId);
-        if (index instanceof Error || index === -1) {
+        if (index instanceof Error || index < 0) {
             return new Error('reservation not found');
         }
 
@@ -87,8 +87,12 @@ export class SheetsController {
     }
 
     async updateReservation(obj: BookingObj) {
-        const index = await this.findRowIndexOfReservation(obj.bookingId);
-        if (index instanceof Error || index === -1) {
+        if (!obj.rescheduleId) {
+            return new Error('empty reschedule id');
+        }
+
+        const index = await this.findRowIndexOfReservation(obj.rescheduleId);
+        if (index instanceof Error || index < 0) {
             return new Error('reservation not found');
         }
 
@@ -98,7 +102,7 @@ export class SheetsController {
                 .updateSheetRow(
                     spreadsheetId,
                     sheetName,
-                    `A${index}`,
+                    `A${index+1}`,
                     [reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]
                 )
         } catch (e) {
