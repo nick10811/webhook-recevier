@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import config from "../config/config";
+import Config from "../config/config";
 
 export class GoogleService {
     private _privateKey: string;
@@ -8,13 +8,13 @@ export class GoogleService {
     private _sheets = google.sheets({ version: 'v4' });
 
     constructor() {
-        if (config.ENVIRONMENT === 'prod') {
+        if (Config.ENVIRONMENT === 'prod') {
             // ref: https://stackoverflow.com/a/78060606
-            this._privateKey = config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n");
+            this._privateKey = Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n");
         } else {
-            this._privateKey = config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+            this._privateKey = Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
         }
-        this._clientEmail = config.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+        this._clientEmail = Config.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     }
 
     getAuthToken() {

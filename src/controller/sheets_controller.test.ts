@@ -2,7 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { BookingObj, SheetsObj } from '../model';
 import { SheetsController } from './sheets_controller';
 import { GoogleService } from '../service';
-import config from '../config/config';
+import Config from '../config/config';
 
 describe('SheetsController_makeObj', () => {
     test('ok', () => {
@@ -116,8 +116,8 @@ describe('sheetsController_appendReservation', () => {
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
         };
 
-        config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
-        config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
         const controller = new SheetsController(new GoogleService());
 
         // act
