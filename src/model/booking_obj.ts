@@ -1,5 +1,6 @@
 export interface BookingObj {
     bookingId: string;
+    rescheduleId: string | undefined;
     status: string;
     greeting: string;
     location: string;

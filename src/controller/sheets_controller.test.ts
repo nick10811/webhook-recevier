@@ -9,6 +9,7 @@ describe('SheetsController.makeObj', () => {
         // arrange
         const arg: BookingObj = {
             bookingId: 'bookingId',
+            rescheduleId: undefined,
             status: 'confirmed',
             greeting: 'Hello undefined',
             location: 'event-location',
@@ -42,6 +43,7 @@ describe('SheetsController.appendReservation', () => {
         // arrange
         const arg: BookingObj = {
             bookingId: 'bookingId',
+            rescheduleId: undefined,
             status: 'confirmed',
             greeting: 'Hello undefined',
             location: 'event-location',
@@ -74,6 +76,7 @@ describe('SheetsController.appendReservation', () => {
         // arrange
         const arg: BookingObj = {
             bookingId: 'whatever',
+            rescheduleId: 'whatever',
             status: 'whatever',
             greeting: 'whatever',
             location: 'whatever',
@@ -104,6 +107,7 @@ describe('SheetsController.appendReservation', () => {
         // arrange
         const arg: BookingObj = {
             bookingId: '0000001',
+            rescheduleId: undefined,
             status: 'status',
             greeting: 'Hello undefined',
             location: 'event-location',
@@ -281,6 +285,7 @@ describe('SheetsController.updateReservation_Ok', () => {
 
         const obj: BookingObj = {
             bookingId: 'booking-id',
+            rescheduleId: 'reschedule-id',
             status: 'updated',
             greeting: 'greeting',
             location: 'location',
@@ -294,8 +299,8 @@ describe('SheetsController.updateReservation_Ok', () => {
         const findRowIndexOfReservation = vi
             .spyOn(controller, 'findRowIndexOfReservation')
             .mockImplementation((bookingId) => {
-                expect(bookingId).equal('booking-id');
-                return Promise.resolve(1);
+                expect(bookingId).equal('reschedule-id');
+                return Promise.resolve(0);
             });
         const updateSheetRow = vi
             .spyOn(mockGoogleService, 'updateSheetRow')
@@ -318,12 +323,63 @@ describe('SheetsController.updateReservation_Ok', () => {
 });
 
 describe('SheetsController.updateReservation_Error', () => {
+    test('undefined reschedule id', async () => {
+        // arrange
+        const controller = new SheetsController(new GoogleService());
+
+        const obj: BookingObj = {
+            bookingId: 'whatever',
+            rescheduleId: undefined,
+            status: 'whatever',
+            greeting: 'whatever',
+            location: 'whatever',
+            duration: 'whatever',
+            timezone: 'whatever',
+            attendee: 'whatever',
+            rescheduleURI: 'whatever',
+            cancelURI: 'whatever',
+        };
+
+        // act
+        const got = await controller.updateReservation(obj);
+
+        // expect
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('empty reschedule id');
+    });
+
+    test('empty reschedule id', async () => {
+        // arrange
+        const controller = new SheetsController(new GoogleService());
+
+        const obj: BookingObj = {
+            bookingId: 'whatever',
+            rescheduleId: '',
+            status: 'whatever',
+            greeting: 'whatever',
+            location: 'whatever',
+            duration: 'whatever',
+            timezone: 'whatever',
+            attendee: 'whatever',
+            rescheduleURI: 'whatever',
+            cancelURI: 'whatever',
+        };
+
+        // act
+        const got = await controller.updateReservation(obj);
+
+        // expect
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('empty reschedule id');
+    });
+
     test('reservation not found', async () => {
         // arrange
         const controller = new SheetsController(new GoogleService());
 
         const obj: BookingObj = {
             bookingId: 'whatever',
+            rescheduleId: 'whatever',
             status: 'whatever',
             greeting: 'whatever',
             location: 'whatever',
@@ -352,6 +408,7 @@ describe('SheetsController.updateReservation_Error', () => {
 
         const obj: BookingObj = {
             bookingId: 'whatever',
+            rescheduleId: 'whatever',
             status: 'whatever',
             greeting: 'whatever',
             location: 'whatever',
