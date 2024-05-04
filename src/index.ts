@@ -1,6 +1,6 @@
 const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
-import Config from './config/config';
+import Config from './config';
 import express, { Request, Response } from 'express';
 import { middleware, webhook, HTTPFetchError } from '@line/bot-sdk';
 import { GoogleService, LineService, lineMiddlewareConfig, lineClientConfig } from './service';

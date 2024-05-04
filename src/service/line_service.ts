@@ -1,4 +1,4 @@
-import Config from '../config/config';
+import Config from '../config';
 import { ClientConfig, messagingApi, MiddlewareConfig } from '@line/bot-sdk';
 
 // Setup all LINE client and Express configurations.

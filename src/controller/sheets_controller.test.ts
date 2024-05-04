@@ -2,7 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { BookingObj, SheetsObj } from '../model';
 import { SheetsController } from './sheets_controller';
 import { GoogleService } from '../service';
-import Config from '../config/config';
+import Config from '../config';
 
 describe('SheetsController_makeObj', () => {
     test('ok', () => {

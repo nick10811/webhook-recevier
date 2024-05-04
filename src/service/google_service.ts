@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import Config from "../config/config";
+import Config from "../config";
 
 export class GoogleService {
     private _privateKey: string;

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { GoogleService } from './google_service';
-import Config from '../config/config';
+import Config from '../config';
 import { JWTInput } from 'google-auth-library/build/src/auth/credentials';
 
 describe('GoogleService.getAuthToken', () => {
