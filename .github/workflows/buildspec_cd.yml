@@ -1,0 +1,29 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      # deploy pattern
+      # deploy/(workflow-run-id)
+      - 'deploy/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_run_id
+        name: Start to Deploy From run-id
+        run: |
+          RUNID=$(basename ${{ github.ref }})
+          echo "deploy run-id: $RUNID"
+          echo "RUNID=$RUNID" >> "$GITHUB_OUTPUT"
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: archive
+          path: artifacts
+          github-token: ${{ secrets.BOT_TOKEN }}
+          run-id: ${{ steps.get_run_id.outputs.RUNID }}
+      - name: Display Structure of Downloaded Files
+        run: |
+          ls -R artifacts
