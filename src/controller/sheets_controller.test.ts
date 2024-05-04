@@ -340,3 +340,62 @@ describe('SheetsController.updateReservation_Ok', () => {
         expect(got).toBeUndefined();
     });
 });
+
+describe('SheetsController.updateReservation_Error', () => {
+    test('reservation not found', async () => {
+        // arrange
+        const controller = new SheetsController(new GoogleService());
+
+        const obj: BookingObj = {
+            bookingId: 'whatever',
+            status: 'whatever',
+            greeting: 'whatever',
+            location: 'whatever',
+            duration: 'whatever',
+            timezone: 'whatever',
+            attendee: 'whatever',
+            rescheduleURI: 'whatever',
+            cancelURI: 'whatever',
+        };
+
+        const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(-1);
+        
+        // act
+        const got = await controller.updateReservation(obj);
+
+        // expect
+        expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('reservation not found');
+    });
+
+    test('GoogleService Error', async () => {
+        // arrange
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const obj: BookingObj = {
+            bookingId: 'whatever',
+            status: 'whatever',
+            greeting: 'whatever',
+            location: 'whatever',
+            duration: 'whatever',
+            timezone: 'whatever',
+            attendee: 'whatever',
+            rescheduleURI: 'whatever',
+            cancelURI: 'whatever',
+        };
+
+        const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(1);
+        const updateSheetRow = vi.spyOn(mockGoogleService, 'updateSheetRow').mockRejectedValue(new Error('whatever'));
+
+        // act
+        const got = await controller.updateReservation(obj);
+
+        // expect
+        expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+        expect(updateSheetRow).toHaveBeenCalledTimes(1);
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('failed to update reservation in sheets: whatever');
+    });
+});
