@@ -89,9 +89,7 @@ describe('SheetsController.appendReservation', () => {
 
         const appendSheetData = vi
             .spyOn(mockGoogleService, 'appendSheetData')
-            .mockImplementation(() => {
-                throw new Error('whatever');
-            });
+            .mockRejectedValue(new Error('whatever'));
 
         // act
         const got = await controller.appendReservation(arg);
