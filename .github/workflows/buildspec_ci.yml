@@ -36,7 +36,8 @@ jobs:
         with:
           name: archive
           path: out/artifact/archive.zip
-      - name: Create Comments
+      - if: github.event_name == 'pull_request'
+        name: Create A Build Succeed Comment
         run: |
           # Using GitHub API to create a comment on the PR
           PR_NUMBER=${{ github.event.pull_request.number }}
