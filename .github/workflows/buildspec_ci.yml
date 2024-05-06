@@ -36,3 +36,11 @@ jobs:
         with:
           name: archive
           path: out/artifact/archive.zip
+      - name: Create Comments
+        run: |
+          # Using GitHub API to create a comment on the PR
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          COMMENT="**BUILD SUCCEED** :rocket:\nworkflow run-id: [${{ github.run_id }}](https://github.com/nick10811/webhook-recevier/actions/runs/${{ github.run_id }})"
+          GITHUB_TOKEN=${{ secrets.BOT_TOKEN }}
+          COMMENT_URL="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
+          curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d "{\"body\": \"${COMMENT}\"}" "${COMMENT_URL}"

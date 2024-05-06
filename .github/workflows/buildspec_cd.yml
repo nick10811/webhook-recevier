@@ -1,0 +1,42 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      # deploy pattern
+      # deploy/(region)/(lambda-name)/(workflow-run-id)
+      # example:
+      # deploy/ap-northeast-1/line-bot/8964697943
+      - 'deploy/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: configure-env
+        name: Configure Environment
+        run: |
+          RUNID=$(basename ${{ github.ref_name }})
+          REGION=$(echo ${{ github.ref_name }} | cut -d/ -f2)
+          LAMBDA_NAME=$(echo ${{ github.ref_name }} | cut -d/ -f3)
+          echo "run-id: $RUNID"
+          echo "region: $REGION"
+          echo "lambda-name: $LAMBDA_NAME"
+          echo "RUNID=$RUNID" > "$GITHUB_OUTPUT"
+          echo "REGION=$REGION" >> "$GITHUB_OUTPUT"
+          echo "LAMBDA_NAME=$LAMBDA_NAME" >> "$GITHUB_OUTPUT"
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: archive
+          path: artifacts
+          github-token: ${{ secrets.BOT_TOKEN }}
+          run-id: ${{ steps.configure-env.outputs.RUNID }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ steps.configure-env.outputs.REGION }}
+      - name: Deploy to AWS
+        run: aws lambda update-function-code --function-name=${{ steps.configure-env.outputs.LAMBDA_NAME }}  --zip-file=fileb://artifacts/archive.zip
