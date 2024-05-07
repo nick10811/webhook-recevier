@@ -21,6 +21,7 @@ i18next
         debug: true,
         fallbackLng: 'en',
         preload: ['en', 'zh-tw'],
+        lowerCaseLng: true,
         backend: {
             loadPath: 'locale/{{lng}}.json',
         },
