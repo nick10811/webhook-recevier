@@ -1,10 +1,11 @@
 import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
 import { BookingObj } from "../model";
+import { t } from "i18next";
 
 export default function bookingCanceled(obj: BookingObj): FlexMessage {
     return {
         "type": "flex",
-        "altText": "Booking System",
+        "altText": t("title.booking_system"),
         "contents": {
             "type": "bubble",
             "body": {
@@ -13,7 +14,7 @@ export default function bookingCanceled(obj: BookingObj): FlexMessage {
                 "contents": [
                     {
                         "type": "text",
-                        "text": "Booking Canceled",
+                        "text": t("title.booking_canceled"),
                         "weight": "bold",
                         "size": "xl"
                     },
@@ -45,7 +46,7 @@ export default function bookingCanceled(obj: BookingObj): FlexMessage {
                                 "contents": [
                                     {
                                         "type": "text",
-                                        "text": "Location",
+                                        "text": t("title.location"),
                                         "color": "#aaaaaa",
                                         "size": "sm",
                                         "flex": 1
@@ -67,7 +68,7 @@ export default function bookingCanceled(obj: BookingObj): FlexMessage {
                                 "contents": [
                                     {
                                         "type": "text",
-                                        "text": "Time",
+                                        "text": t("title.datetime"),
                                         "color": "#aaaaaa",
                                         "size": "sm",
                                         "flex": 1
@@ -89,7 +90,7 @@ export default function bookingCanceled(obj: BookingObj): FlexMessage {
                                 "contents": [
                                     {
                                         "type": "text",
-                                        "text": "Timezone",
+                                        "text": t("title.timezone"),
                                         "color": "#aaaaaa",
                                         "size": "sm",
                                         "flex": 1
@@ -111,7 +112,7 @@ export default function bookingCanceled(obj: BookingObj): FlexMessage {
                                 "contents": [
                                     {
                                         "type": "text",
-                                        "text": "Attendee",
+                                        "text": t("title.attendee"),
                                         "color": "#aaaaaa",
                                         "size": "sm",
                                         "flex": 1

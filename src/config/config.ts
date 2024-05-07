@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 type Config = NodeJS.ProcessEnv & {
-    ENVIRONMENT: string;
+    ENVIRONMENT: 'dev' | 'prod';
     PORT: number;
 
     // LINE

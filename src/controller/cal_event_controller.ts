@@ -4,6 +4,7 @@ import { BookingController } from './booking_controller';
 import { CalResponse, Payload } from '../model';
 import { SheetsController } from './sheets_controller';
 import { LineService } from '../service';
+import { t } from 'i18next';
 
 export interface CalServices {
     line: LineService;
@@ -54,7 +55,7 @@ export class CalEventController implements ICalEventController {
 
         return this._srv.line.pushMessage({
             to: lineID,
-            messages: [template.bookingCreated(bookingObj, 'Booking Created')],
+            messages: [template.bookingCreated(bookingObj, t('title.booking_created'))],
         });
     }
 
@@ -74,7 +75,7 @@ export class CalEventController implements ICalEventController {
 
         return this._srv.line.pushMessage({
             to: lineID,
-            messages: [template.bookingCreated(bookingObj, 'Booking Rescheduled')],
+            messages: [template.bookingCreated(bookingObj, t('title.booking_rescheduled'))],
         });
     }
 
