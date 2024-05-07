@@ -3,6 +3,8 @@
         "booking_system": "Booking System",
         "booking_created": "Booking Created",
         "booking_rescheduled": "Booking Rescheduled",
+        "booking_canceled": "Booking Canceled",
+        
         "location": "Location",
         "datetime": "Date & Time",
         "timezone": "Timezone",

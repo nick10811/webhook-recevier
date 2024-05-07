@@ -3,6 +3,8 @@
         "booking_system": "預約系統",
         "booking_created": "預約確認",
         "booking_rescheduled": "預約更改",
+        "booking_canceled": "預約取消",
+
         "location": "地點",
         "datetime": "日期 & 時間",
         "timezone": "時區",
