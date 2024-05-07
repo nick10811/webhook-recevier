@@ -6,9 +6,26 @@ import { middleware, webhook, HTTPFetchError } from '@line/bot-sdk';
 import { GoogleService, LineService, lineMiddlewareConfig, lineClientConfig } from './service';
 import { BookingController, CalEventController, CalServices, LineEventController, SheetsController } from './controller';
 import { CalResponse } from './model';
+import i18next from 'i18next';
+import Backend from 'i18next-node-fs-backend';
+import i18nextMiddleware from 'i18next-http-middleware';
 
 // create Express app
 const app = express();
+
+// configure i18n
+i18next
+    .use(Backend)
+    .use(i18nextMiddleware.LanguageDetector)
+    .init({
+        debug: true,
+        fallbackLng: 'en',
+        preload: ['en', 'zh-tw'],
+        backend: {
+            loadPath: 'locale/{{lng}}.json',
+        },
+    });
+app.use(i18nextMiddleware.handle(i18next));
 
 // line webhook
 app.post(
@@ -55,9 +72,12 @@ app.use(bodyParser.json());
 
 // cal.com webhook
 app.post(
-    '/calwebhook',
+    '/calwebhook/:lang',
     async (req: Request, res: Response): Promise<Response> => {
         console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
+
+        const lang = req.params.lang;
+        i18next.changeLanguage(lang);
 
         const callbackRequest: CalResponse = req.body;
         const calEventController = new CalEventController({
