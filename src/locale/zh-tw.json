@@ -1,9 +1,16 @@
 {
     "title": {
-        "booking_system": "預約系統"
+        "booking_system": "預約系統",
+        "booking_created": "預約確認",
+        "booking_rescheduled": "預約更改",
+        "location": "地點",
+        "datetime": "日期 & 時間",
+        "timezone": "時區",
+        "attendee": "參與者"
     },
     "button": {
-        "book": "預約"
-    },
-    "booking_created": "預約確認"
+        "book": "預約",
+        "reschedule": "更改預約",
+        "cancel": "取消預約"
+    }
 }

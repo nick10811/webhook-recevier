@@ -55,7 +55,7 @@ export class CalEventController implements ICalEventController {
 
         return this._srv.line.pushMessage({
             to: lineID,
-            messages: [template.bookingCreated(bookingObj, t('booking_created'))],
+            messages: [template.bookingCreated(bookingObj, t('title.booking_created'))],
         });
     }
 
@@ -75,7 +75,7 @@ export class CalEventController implements ICalEventController {
 
         return this._srv.line.pushMessage({
             to: lineID,
-            messages: [template.bookingCreated(bookingObj, 'Booking Rescheduled')],
+            messages: [template.bookingCreated(bookingObj, t('title.booking_rescheduled'))],
         });
     }
 

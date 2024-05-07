@@ -1,9 +1,16 @@
 {
     "title": {
-        "booking_system": "Booking System"
+        "booking_system": "Booking System",
+        "booking_created": "Booking Created",
+        "booking_rescheduled": "Booking Rescheduled",
+        "location": "Location",
+        "datetime": "Date & Time",
+        "timezone": "Timezone",
+        "attendee": "Attendee"
     },
     "button": {
-        "book": "BOOK NOW"
-    },
-    "booking_created": "Booking Created"
+        "book": "BOOK NOW",
+        "reschedule": "RESCHEDULE",
+        "cancel": "CANCEL"
+    }
 }
