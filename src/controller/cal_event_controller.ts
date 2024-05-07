@@ -4,7 +4,7 @@ import { BookingController } from './booking_controller';
 import { CalResponse, Payload } from '../model';
 import { SheetsController } from './sheets_controller';
 import { LineService } from '../service';
-import { t } from 'i18next';
+import i18next, { t } from 'i18next';
 
 export interface CalServices {
     line: LineService;
@@ -52,6 +52,10 @@ export class CalEventController implements ICalEventController {
             console.error(`failed to append reservation to sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to append reservation to sheet: ${err.message}`));
         }
+
+        // print current locale
+        console.log('current locale: ' + i18next.language);
+        console.log('booking_created: ' + t('booking_created'));
 
         return this._srv.line.pushMessage({
             to: lineID,

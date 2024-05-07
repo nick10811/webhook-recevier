@@ -77,7 +77,13 @@ app.post(
         console.log(`received a webhook event (cal.com): ${JSON.stringify(req.body)}`)
 
         const lang = req.query.lang as string;
-        i18next.changeLanguage(lang);
+        i18next.changeLanguage(lang)
+            .then(() => {
+                console.log(`changed language to ${lang}`);
+            })
+            .catch((err) => {
+                console.error(`failed to change language: ${err}`);
+            });
 
         const callbackRequest: CalResponse = req.body;
         const calEventController = new CalEventController({
