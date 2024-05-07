@@ -1,3 +1,9 @@
 {
+    "title": {
+        "booking_system": "Booking System"
+    },
+    "button": {
+        "book": "BOOK NOW"
+    },
     "booking_created": "Booking Created"
 }

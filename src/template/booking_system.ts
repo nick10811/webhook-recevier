@@ -1,9 +1,10 @@
 import { FlexMessage } from "@line/bot-sdk/dist/messaging-api/api";
+import { t } from "i18next";
 
 export default function bookingSystem(uri: string): FlexMessage {
     return {
         "type": "flex",
-        "altText": "Booking System",
+        "altText": t("title.booking_system"),
         "contents": {
             "type": "bubble",
             "body": {
@@ -51,7 +52,7 @@ export default function bookingSystem(uri: string): FlexMessage {
                         "height": "sm",
                         "action": {
                             "type": "uri",
-                            "label": "BOOK NOW",
+                            "label": t("button.book"),
                             "uri": uri,
                         }
                     }
