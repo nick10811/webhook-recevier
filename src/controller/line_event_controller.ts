@@ -9,7 +9,6 @@ export interface LineEventService {
 
 export interface ILineEventController {
     handleText(event: webhook.Event): Promise<messagingApi.ReplyMessageResponse | undefined>;
-    pushMessage(userID: string): void;
 }
 
 export class LineEventController implements ILineEventController {
@@ -26,13 +25,6 @@ export class LineEventController implements ILineEventController {
         return event.type === 'message' && event.message && event.message.type === 'text';
     };
 
-    async pushMessage(userID: string) {
-        this._srv.line.pushMessage({
-            to: userID,
-            messages: [{ type: 'text', text: 'Hello, This is a reminder message.' }],
-        });
-    }
-
     async handleText(event: webhook.Event) {
         if (!this.isTextEvent(event)) {
             return Promise.resolve(undefined);
@@ -43,19 +35,13 @@ export class LineEventController implements ILineEventController {
         var replyMessage: Message;
 
         if (sentMessage.toLowerCase() === 'book') {
+            // launch booking system
             const uri = `${Config.BOOKING_URL}?lineid=${lineID}`;
             replyMessage = template.bookingSystem(uri) as Message;
 
         } else {
-            // create an echoing text message
-            replyMessage = { type: 'text', text: `Hello "${lineID}" just said: "${sentMessage}"` };
-            console.log(`"${lineID}" just said: "${sentMessage}"`);
-
-            // send a notification after 5s
-            setTimeout(() => {
-                this.pushMessage(lineID as string);
-            }, 5000);
-
+            // TODO: handle other messages
+            return Promise.resolve(undefined);
         }
 
         // use reply API
