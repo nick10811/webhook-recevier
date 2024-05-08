@@ -1,0 +1,18 @@
+{
+    "title": {
+        "booking_system": "予約システム",
+        "booking_created": "予約が作成されました",
+        "booking_rescheduled": "予約の再スケジュール",
+        "booking_canceled": "予約がキャンセルされました",
+
+        "location": "場所",
+        "datetime": "日付と時刻",
+        "timezone": "タイムゾーン",
+        "attendee": "出席者"
+    },
+    "button": {
+        "book": "予約",
+        "reschedule": "再スケジュール",
+        "cancel": "キャンセル"
+    }
+}

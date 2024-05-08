@@ -96,7 +96,7 @@ describe('LineEventController.handleText_OK', () => {
             want: { sentMessages: [{ id: "whatever", quoteToken: "whatever" }] },
         },
         {
-            name: 'is text event and message is not book',
+            name: 'is text event and unhandled message',
             args: {
                 event: {
                     type: 'message',
@@ -108,9 +108,9 @@ describe('LineEventController.handleText_OK', () => {
                         userId: 'whatever'
                     }
                 },
-                replyMessageTimes: 1,
+                replyMessageTimes: 0,
             },
-            want: { sentMessages: [{ id: "whatever", quoteToken: "whatever" }] },
+            want: undefined,
         },
     ];
 
