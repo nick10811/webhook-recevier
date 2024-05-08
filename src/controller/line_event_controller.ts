@@ -32,7 +32,7 @@ export class LineEventController implements ILineEventController {
 
         const lineID = event.source?.userId;
         const sentMessage = event.message.text;
-        var replyMessage: Message;
+        let replyMessage: Message;
 
         if (sentMessage.toLowerCase() === 'book') {
             // launch booking system
