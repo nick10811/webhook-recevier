@@ -1,3 +1,4 @@
+import Config from '../config';
 import { LineService } from '../service';
 import template from '../template';
 import { webhook, Message, messagingApi } from '@line/bot-sdk';
@@ -42,7 +43,7 @@ export class LineEventController implements ILineEventController {
         var replyMessage: Message;
 
         if (sentMessage.toLowerCase() === 'book') {
-            const uri = `https://cal.com/nick-l-yang-vkljfs/15min?lineid=${lineID}`;
+            const uri = `${Config.BOOKING_URL}?lineid=${lineID}`;
             replyMessage = template.bookingSystem(uri) as Message;
 
         } else {

@@ -14,6 +14,9 @@ type Config = NodeJS.ProcessEnv & {
     // GOOGLE
     GOOGLE_SERVICE_ACCOUNT_EMAIL: string;
     GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: string;
+
+    // CAL.COM
+    BOOKING_URL: string;
 }
 
 export default process.env as Config;
