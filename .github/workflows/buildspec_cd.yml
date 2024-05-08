@@ -13,6 +13,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Workflow Initialization
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Trigger User: ${{ github.triggering_actor }}"
       - id: configure-env
         name: Configure Environment
         run: |

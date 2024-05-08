@@ -14,6 +14,10 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Workflow Initialization
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Trigger User: ${{ github.triggering_actor }}"
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Setup Node
