@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { BookingObj, Payload } from '../model';
+import { BookingObj, CalResponse, Payload } from '../model';
 import { CalEventController, CalServices, ICalEventController } from './cal_event_controller';
 import { BookingController } from './booking_controller';
 import { SheetsController } from './sheets_controller';
@@ -394,6 +394,22 @@ describe('CalEventController.bookingRescheduled_Error', () => {
             expect(pushMessage).toHaveBeenCalledTimes(1);
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('whatever');
+        }
+    });
+});
+
+describe('CalEventController.handleEvent_Error', () => {
+    test('unknown event type', async () => {
+        // arrange
+        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
+
+        try {
+            // act
+            await ctl.handleEvent({ triggerEvent: 'whatever', payload: {} } as CalResponse);
+        } catch (err) {
+            // expect
+            expect(err).toBeInstanceOf(Error);
+            expect(err.message).toBe('received an unknown event: {"triggerEvent":"whatever","payload":{}}');
         }
     });
 });
