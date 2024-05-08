@@ -19,7 +19,7 @@ i18next
     .use(i18nextMiddleware.LanguageDetector)
     .init({
         fallbackLng: 'en',
-        preload: ['en', 'zh-tw'],
+        preload: ['en', 'zh-tw', 'jp'],
         lowerCaseLng: true,
         backend: {
             loadPath: 'locale/{{lng}}.json',
