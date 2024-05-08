@@ -13,6 +13,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Workflow Initialization
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Trigger User: ${{ github.triggering_actor }}"
       - id: configure-env
         name: Configure Environment
         run: |
@@ -22,7 +26,7 @@ jobs:
           echo "run-id: $RUNID"
           echo "region: $REGION"
           echo "lambda-name: $LAMBDA_NAME"
-          echo "RUNID=$RUNID" > "$GITHUB_OUTPUT"
+          echo "RUNID=$RUNID" >> "$GITHUB_OUTPUT"
           echo "REGION=$REGION" >> "$GITHUB_OUTPUT"
           echo "LAMBDA_NAME=$LAMBDA_NAME" >> "$GITHUB_OUTPUT"
       - name: Download Artifact
@@ -30,13 +34,13 @@ jobs:
         with:
           name: archive
           path: artifacts
-          github-token: ${{ secrets.BOT_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.configure-env.outputs.RUNID }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ steps.configure-env.outputs.REGION }}
-      - name: Deploy to AWS
-        run: aws lambda update-function-code --function-name=${{ steps.configure-env.outputs.LAMBDA_NAME }}  --zip-file=fileb://artifacts/archive.zip
+      - name: Deploy to AWS Lambda
+        run: aws lambda update-function-code --function-name=${{ steps.configure-env.outputs.LAMBDA_NAME }} --zip-file=fileb://artifacts/archive.zip
