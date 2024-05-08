@@ -30,7 +30,7 @@ jobs:
         with:
           name: archive
           path: artifacts
-          github-token: ${{ secrets.BOT_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.configure-env.outputs.RUNID }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
