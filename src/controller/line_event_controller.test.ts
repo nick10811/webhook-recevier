@@ -85,7 +85,7 @@ describe('LineEventController.handleText_OK', () => {
                     type: 'message',
                     message: {
                         type: 'text',
-                        text: 'book'
+                        text: 'bOOk'
                     },
                     source: {
                         userId: 'whatever'
