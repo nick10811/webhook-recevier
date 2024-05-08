@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -38,10 +40,9 @@ jobs:
           path: out/artifact/archive.zip
       - if: github.event_name == 'pull_request'
         name: Create A Build Succeed Comment
-        run: |
-          # Using GitHub API to create a comment on the PR
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          COMMENT="**BUILD SUCCEED** :rocket:\nworkflow run-id: [${{ github.run_id }}](https://github.com/nick10811/webhook-recevier/actions/runs/${{ github.run_id }})"
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          COMMENT_URL="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
-          curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d "{\"body\": \"${COMMENT}\"}" "${COMMENT_URL}"
+        uses: mshick/add-pr-comment@v2
+        with:
+          allow-repeats: true
+          message: |
+            **BUILD SUCCEED** :rocket:
+            workflow run-id: [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
