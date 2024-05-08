@@ -35,7 +35,7 @@ export class CalEventController implements ICalEventController {
                 return this.bookingRescheduled(payload);
             default:
                 console.log(`received an unknown event: ${JSON.stringify(body)}`);
-                return Promise.reject({ status: 400, message: 'unknown event: ' + event });
+                return Promise.reject(new Error(`received an unknown event: ${JSON.stringify(body)}`));
         }
     }
 

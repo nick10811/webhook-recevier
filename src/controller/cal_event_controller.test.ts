@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { BookingObj, Payload } from '../model';
+import { BookingObj, CalResponse, Payload } from '../model';
 import { CalEventController, CalServices, ICalEventController } from './cal_event_controller';
 import { BookingController } from './booking_controller';
 import { SheetsController } from './sheets_controller';
@@ -395,5 +395,116 @@ describe('CalEventController.bookingRescheduled_Error', () => {
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('whatever');
         }
+    });
+});
+
+describe('CalEventController.handleEvent_Error', () => {
+    test('unknown event type', async () => {
+        // arrange
+        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
+
+        try {
+            // act
+            await ctl.handleEvent({ triggerEvent: 'whatever', payload: {} } as CalResponse);
+        } catch (err) {
+            // expect
+            expect(err).toBeInstanceOf(Error);
+            expect(err.message).toBe('received an unknown event: {"triggerEvent":"whatever","payload":{}}');
+        }
+    });
+});
+
+describe('CalEventController.handleEvent_OK', () => {
+    test('BOOKING_CREATED', async () => {
+        // arrange
+        const srv: CalServices = {
+            line: new LineService({} as ClientConfig),
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+
+        const bookingCreated = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({} as BookingObj);
+        const appendReservation = vi
+            .spyOn(srv.sheets, 'appendReservation')
+            .mockResolvedValue(undefined);
+        const pushMessage = vi
+            .spyOn(srv.line, 'pushMessage')
+            .mockResolvedValue({} as any);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
+        const body = { triggerEvent: 'BOOKing_CREATED', payload: { responses: { lineid: { value: 'whatever' } } } } as CalResponse;
+
+        // act
+        const got = await ctl.handleEvent(body);
+
+        // expect
+        expect(bookingCreated).toHaveBeenCalledTimes(1);
+        expect(appendReservation).toHaveBeenCalledTimes(1);
+        expect(pushMessage).toHaveBeenCalledTimes(1);
+        expect(got).toMatchObject({});
+    });
+
+    test('BOOKING_CANCELLED', async () => {
+        // arrange
+        const srv: CalServices = {
+            line: new LineService({} as ClientConfig),
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+
+        const bookingCancelled = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+        const deleteReservation = vi
+            .spyOn(srv.sheets, 'deleteReservation')
+            .mockResolvedValue(undefined);
+        const pushMessage = vi
+            .spyOn(srv.line, 'pushMessage')
+            .mockResolvedValue({} as any);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
+        const body = { triggerEvent: 'BOOKing_CANCELLED', payload: { responses: { lineid: { value: 'whatever' } } } } as CalResponse;
+
+        // act
+        const got = await ctl.handleEvent(body);
+
+        // expect
+        expect(bookingCancelled).toHaveBeenCalledTimes(1);
+        expect(deleteReservation).toHaveBeenCalledTimes(1);
+        expect(pushMessage).toHaveBeenCalledTimes(1);
+        expect(got).toMatchObject({});
+    });
+
+    test('BOOKING_RESCHEDULED', async () => {
+        // arrange
+        const srv: CalServices = {
+            line: new LineService({} as ClientConfig),
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+
+        const bookingRescheduled = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({} as BookingObj);
+        const updateReservation = vi
+            .spyOn(srv.sheets, 'updateReservation')
+            .mockResolvedValue(undefined);
+        const pushMessage = vi
+            .spyOn(srv.line, 'pushMessage')
+            .mockResolvedValue({} as any);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
+        const body = { triggerEvent: 'BOOKing_RESCHEDULED', payload: { responses: { lineid: { value: 'whatever' } } } } as CalResponse;
+
+        // act
+        const got = await ctl.handleEvent(body);
+
+        // expect
+        expect(bookingRescheduled).toHaveBeenCalledTimes(1);
+        expect(updateReservation).toHaveBeenCalledTimes(1);
+        expect(pushMessage).toHaveBeenCalledTimes(1);
+        expect(got).toMatchObject({});
     });
 });
