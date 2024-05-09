@@ -67,6 +67,7 @@ with language support:
 - https://www.example.com/linewebhook?lang=jp
 
 ## Testing
+The project utilizes the [Vitest](https://vitest.dev/) testing framework for unit testing and code coverage.
 - Run `npm run test` to run the test cases.
 - Run `npm run test:report` to generate the test report and coverage.
   > The output will be generated in the `./out/report` directory. Open `index.html` to view the report.
