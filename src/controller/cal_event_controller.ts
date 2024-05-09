@@ -24,9 +24,8 @@ export class CalEventController implements ICalEventController {
     }
 
     async handleEvent(body: CalResponse): Promise<PushMessageResponse | undefined> {
-        const event = body.triggerEvent;
-        const bookingObj = this._srv.booking.makeObj(body.payload);
-        switch (event.toUpperCase()) {
+        const bookingObj = this._srv.booking.makeObj(body);
+        switch (bookingObj.eventType.toUpperCase()) {
             case 'BOOKING_CREATED':
                 return this.bookingCreated(bookingObj);
             case 'BOOKING_CANCELLED':

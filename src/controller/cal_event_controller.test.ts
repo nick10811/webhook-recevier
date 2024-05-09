@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { BookingObj, CalResponse, Payload } from '../model';
+import { BookingObj, CalResponse } from '../model';
 import { CalEventController, CalServices, ICalEventController } from './cal_event_controller';
 import { BookingController } from './booking_controller';
 import { SheetsController } from './sheets_controller';
@@ -23,7 +23,7 @@ describe('CalEventController.handleEvent_Error', () => {
 
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ eventType: 'whatever' } as BookingObj);
 
         const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
@@ -50,7 +50,10 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingCreated = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
+            .mockImplementation((body) => {
+                expect(body).toMatchObject({ triggerEvent: 'BOOKing_CREATED', payload: { responses: { lineid: { value: 'whatever' } } } });
+                return { eventType: 'BOOKing_CREATED', lineid: 'whatever' } as BookingObj;
+            });
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
             .mockResolvedValue(undefined);
@@ -81,7 +84,10 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingCancelled = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ lineid: 'whatever', bookingId: 'book-id' } as BookingObj);
+            .mockImplementation((body) => {
+                expect(body).toMatchObject({ triggerEvent: 'BOOKing_CANCELLED', payload: { responses: { lineid: { value: 'whatever' } } } });
+                return { eventType: 'BOOKing_CANCELLED', lineid: 'whatever', bookingId: 'booking-id' } as BookingObj;
+            });
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
             .mockResolvedValue(undefined);
@@ -112,7 +118,10 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingRescheduled = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
+            .mockImplementation((body) => {
+                expect(body).toMatchObject({ triggerEvent: 'BOOKing_RESCHEDULED', payload: { responses: { lineid: { value: 'whatever' } } } });
+                return { eventType: 'BOOKing_RESCHEDULED', lineid: 'whatever' } as BookingObj;
+            });
         const updateReservation = vi
             .spyOn(srv.sheets, 'updateReservation')
             .mockResolvedValue(undefined);
@@ -270,7 +279,7 @@ describe('CalEventController.bookingRescheduled_Error', () => {
             booking: new BookingController(),
             sheets: new SheetsController(new GoogleService()),
         }
-        
+
         const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
         try {

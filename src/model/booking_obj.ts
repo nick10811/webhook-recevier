@@ -1,7 +1,7 @@
 export interface BookingObj {
     eventType: string;
-    eventTitle: string;
     timestamp: string;
+    eventTitle: string;
     bookingId: string;
     rescheduleId: string | undefined;
     status: string;

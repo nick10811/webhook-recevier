@@ -1,21 +1,22 @@
 import moment from "moment-timezone";
-import { BookingObj, Payload } from "../model";
+import { BookingObj, CalResponse } from "../model";
 
 export interface IBookingController {
-    makeObj(payload: Payload): BookingObj;
+    makeObj(resp: CalResponse): BookingObj;
     hasLineID(bookingObj: BookingObj): boolean;
 }
 
 export class BookingController implements IBookingController {
-    makeObj(payload: Payload): BookingObj {
+    makeObj(resp: CalResponse): BookingObj {
+        const payload = resp.payload;
         const baseURL = payload.bookerUrl;
         const rescheduleURI = baseURL + "/reschedule/" + payload.uid;
         const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
         return {
-            eventType: '',
+            eventType: resp.triggerEvent,
+            timestamp: resp.createdAt,
             eventTitle: payload.eventTitle,
-            timestamp: '',
             bookingId: payload.bookingId.toString(),
             rescheduleId: payload.rescheduleId?.toString() ?? undefined,
             status: payload.status,
