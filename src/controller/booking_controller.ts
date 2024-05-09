@@ -3,6 +3,7 @@ import { BookingObj, Payload } from "../model";
 
 export interface IBookingController {
     makeObj(payload: Payload): BookingObj;
+    hasLineID(bookingObj: BookingObj): boolean;
 }
 
 export class BookingController implements IBookingController {
@@ -35,6 +36,10 @@ export class BookingController implements IBookingController {
             rescheduleURI: rescheduleURI,
             cancelURI: cancelURI,
         };
+    }
+
+    hasLineID(bookingObj: BookingObj): boolean {
+        return bookingObj.lineid !== undefined && bookingObj.lineid !== '';
     }
 
     private makeDurationString(startTime: string, endTime: string, timezone: string): string {

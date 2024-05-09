@@ -159,3 +159,47 @@ describe('makeObj', () => {
         expect(got).toMatchObject(want);
     });
 });
+
+describe('hasLineID', () => {
+    type Args = {
+        lineid: string | undefined;
+    };
+
+    type TestCase = {
+        name: string,
+        args: Args,
+        want: boolean;
+    };
+
+    const tests: TestCase[] = [
+        {
+            name: 'false: undefined',
+            args: { lineid: undefined },
+            want: false,
+        },
+        {
+            name: 'false: empty string',
+            args: { lineid: '' },
+            want: false,
+        },
+        {
+            name: 'true: non-empty string',
+            args: { lineid: 'whatever' },
+            want: true,
+        }
+    ];
+
+    tests.forEach(({ name, args, want }) => {
+        test(name, () => {
+            // arrange
+            const ctl = new BookingController();
+            const obj = { lineid: args.lineid } as BookingObj;
+
+            // act
+            const got = ctl.hasLineID(obj);
+
+            // expect
+            expect(got).toBe(want);
+        });
+    });
+});
