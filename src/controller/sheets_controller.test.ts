@@ -41,7 +41,7 @@ describe('SheetsController.makeObj', () => {
 describe('SheetsController.appendReservation', () => {
     test('ok', async () => {
         // arrange
-        const arg: BookingObj = {
+        const arg = {
             bookingId: 'bookingId',
             rescheduleId: undefined,
             status: 'confirmed',
@@ -52,13 +52,14 @@ describe('SheetsController.appendReservation', () => {
             attendee: 'whatever name',
             rescheduleURI: 'https://example.com/reschedule/uid',
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
-        };
+        } as BookingObj;
 
+        Config.SPREADSHEET_ID = 'spreadsheet-id';
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
 
         const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockImplementation((spreadsheetId, sheetName, values) => {
-            expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+            expect(spreadsheetId).equal('spreadsheet-id');
             expect(sheetName).equal('reservations');
             expect(values).toEqual([['bookingId', 'whatever name', 'event-location', '2024-04-12 13:45 - 14:00', 'timezone', 'confirmed']]);
             return Promise.resolve({ spreadsheetId: 'sheet-id' });
@@ -174,9 +175,10 @@ describe('SheetsController.findRowIndexOfReservation_Ok', () => {
             // arrange
             const mockGoogleService = new GoogleService();
             const controller = new SheetsController(mockGoogleService);
+            Config.SPREADSHEET_ID = 'spreadsheet-id';
 
             const getSheetData = vi.spyOn(mockGoogleService, 'getSheetData').mockImplementation((spreadsheetId, sheetName) => {
-                expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+                expect(spreadsheetId).equal('spreadsheet-id');
                 expect(sheetName).equal('reservations');
                 return Promise.resolve(args.sheetData);
             });
@@ -216,6 +218,7 @@ describe('SheetsController.deleteReservation_Ok', () => {
         // arrange
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
+        Config.SPREADSHEET_ID = 'spreadsheet-id';
 
         const findRowIndexOfReservation = vi
             .spyOn(controller, 'findRowIndexOfReservation')
@@ -226,7 +229,7 @@ describe('SheetsController.deleteReservation_Ok', () => {
         const deleteSheetRow = vi
             .spyOn(mockGoogleService, 'deleteSheetRow')
             .mockImplementation((spreadsheetId, sheetId, indexOfRow) => {
-                expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+                expect(spreadsheetId).equal('spreadsheet-id');
                 expect(sheetId).equal(0);
                 expect(indexOfRow).equal(1);
                 return Promise.resolve({ spreadsheetId: 'whatever' });
@@ -283,7 +286,7 @@ describe('SheetsController.updateReservation_Ok', () => {
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
 
-        const obj: BookingObj = {
+        const obj = {
             bookingId: 'booking-id',
             rescheduleId: 'reschedule-id',
             status: 'updated',
@@ -294,7 +297,8 @@ describe('SheetsController.updateReservation_Ok', () => {
             attendee: 'attendee',
             rescheduleURI: 'reschedule-uri',
             cancelURI: 'cancel-uri',
-        };
+        } as BookingObj;
+        Config.SPREADSHEET_ID = 'spreadsheet-id';
 
         const findRowIndexOfReservation = vi
             .spyOn(controller, 'findRowIndexOfReservation')
@@ -305,7 +309,7 @@ describe('SheetsController.updateReservation_Ok', () => {
         const updateSheetRow = vi
             .spyOn(mockGoogleService, 'updateSheetRow')
             .mockImplementation((spreadsheetId, sheetName, range, values) => {
-                expect(spreadsheetId).equal('1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ');
+                expect(spreadsheetId).equal('spreadsheet-id');
                 expect(sheetName).equal('reservations');
                 expect(range).equal('A1');
                 expect(values).toEqual(['booking-id', 'attendee', 'location', 'duration', 'timezone', 'updated']);
