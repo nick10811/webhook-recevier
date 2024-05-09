@@ -1,7 +1,7 @@
 # WEBHOOK-RECEIVER
 
 ## Description
-The project is a webhook receiver that enables users to book an event on [Cal.com](https://cal.com/) through text messages on the LINE bot and store the event information on Google Sheets. It integrates with the LINE messaging API and Cal.com API. The project is built using Node.js and TypeScript and is designed to be deployed on AWS Lambda.
+The project is a webhook receiver that enables users to book an event on [Cal.com](https://cal.com/) through text messages on the LINE bot and store the event information on Google Sheets. It integrates with the LINE messaging API and Cal.com API. The project is built using Node.js and TypeScript and is designed to be deployed on AWS Lambda. The architecture of the project is based on the MVC pattern.
 
 ## Prerequisites
 - [Node.js](https://nodejs.org/en/download/current) (v20 and above)
@@ -17,13 +17,13 @@ The project is a webhook receiver that enables users to book an event on [Cal.co
 │   └── report/ (test report and coverage)
 ├── src/
 │   ├── config/
-│   │   │── allowed_line_text.json (allowedlist of LINE text)
-│   │   └── config.ts (configuration)
+│   │   │── config.ts (configuration)
+│   │   └── handled_line_text.json (handled LINE text)
 │   ├── controller/
 │   ├── locale/ (localization)
 │   ├── model/
 │   ├── service/
-│   ├── template/ (LINE message templates)
+│   ├── template/ (LINE reply message templates)
 │   └── index.tsx (main function)
 ├── package.json (project absctract)
 ├── README.md
@@ -107,11 +107,11 @@ There are two ways to obtain the workflow run-id:
   3. Click the green checkmark icon on the top.
   4. Click the Details link on the CI pipeline, **Build and Test/ build (push)**.
   5. Copy the [workflow run-id](https://github.com/orgs/community/discussions/26965#discussioncomment-3254141) from the URL.
-      - e.g. https://github.com/{owner}/{repo}/actions/runs/{workflow-run-id}
+      - pattern: https://github.com/{owner}/{repo}/actions/runs/{workflow-run-id}
 
 ![image](./image/find-workflow-run-id.png)
 
-#### Deploy Branch Pattern
+#### Push a New Deploy Branch
 The CD pipeline is triggered by pushing a new branch with the following pattern:
 - deploy/{region}/{lambda-function-name}/{workflow-run-id}
 - examples: 

@@ -1,4 +1,4 @@
-import Config, { allowedLineText } from '../config';
+import Config, { handledLineText } from '../config';
 import { LineService } from '../service';
 import template from '../template';
 import { webhook, Message, messagingApi } from '@line/bot-sdk';
@@ -34,7 +34,7 @@ export class LineEventController implements ILineEventController {
         const sentMessage = event.message.text;
         let replyMessage: Message;
 
-        if (allowedLineText.book.some((text) => text.toLowerCase() === sentMessage.toLowerCase())) {
+        if (handledLineText.book.some((text) => text.toLowerCase() === sentMessage.toLowerCase())) {
             // launch booking system
             const uri = `${Config.BOOKING_URL}?lineid=${lineID}`;
             replyMessage = template.bookingSystem(uri) as Message;
