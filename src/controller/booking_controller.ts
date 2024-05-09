@@ -12,14 +12,26 @@ export class BookingController implements IBookingController {
         const cancelURI = baseURL + "/booking/" + payload.uid + "?cancel=true&allRemainingBookings=false";
 
         return {
+            eventType: '',
+            eventTitle: payload.eventTitle,
+            timestamp: '',
             bookingId: payload.bookingId.toString(),
             rescheduleId: payload.rescheduleId?.toString() ?? undefined,
             status: payload.status,
-            greeting: "Hello " + payload.responses.name?.value,
+            
             location: payload.location,
-            duration: this.makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
+            videoCallURL: payload.metadata?.videoCallUrl ?? undefined,
+            startTime: payload.startTime,
+            endTime: payload.endTime,
             timezone: payload.organizer.timeZone,
-            attendee: payload.responses.name?.value ?? "unknown name",
+            duration: this.makeDurationString(payload.startTime, payload.endTime, payload.organizer.timeZone),
+
+            attendee: payload.responses.name?.value ?? 'unknown name',
+            email: payload.responses.email?.value ?? undefined,
+            phone: payload.responses.phone?.value ?? undefined,
+            lineid: payload.responses.lineid?.value ?? undefined,
+
+            greeting: 'Hello ' + payload.responses.name?.value,
             rescheduleURI: rescheduleURI,
             cancelURI: cancelURI,
         };
