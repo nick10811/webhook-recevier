@@ -49,12 +49,22 @@ The project is a webhook receiver that enables users to book an event on [Cal.co
 - Run `npm start` to start the server.
 - Run `npm run clean` to clean the output directories.
 
-#### ngrok (optional)
+### ngrok (optional)
 ngrok is a tool that allows you to expose a web server running on your local machine to the internet. This is useful for testing webhooks locally.
 - Download and install ngrok from [here](https://ngrok.com/download).
 - Sign up for an account and get your auth token from [here](https://dashboard.ngrok.com/get-started/setup).
 - Authenticate your account by running `ngrok authtoken <your_auth_token>`.
 - Run `ngrok http 3000` to expose the server to the internet.
+
+### Webhook URL
+The project provides two webhook URLs:
+- https://www.example.com/linewebhook
+- https://www.example.com/calwebhook
+
+with language support:
+- https://www.example.com/linewebhook?lang=en
+- https://www.example.com/linewebhook?lang=zh-TW
+- https://www.example.com/linewebhook?lang=jp
 
 ## Testing
 - Run `npm run test` to run the test cases.
