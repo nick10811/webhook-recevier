@@ -1,7 +1,7 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
 import template from '../template';
 import { BookingController } from './booking_controller';
-import { CalResponse, Payload } from '../model';
+import { BookingObj, CalResponse } from '../model';
 import { SheetsController } from './sheets_controller';
 import { LineService } from '../service';
 import { t } from 'i18next';
@@ -25,22 +25,21 @@ export class CalEventController implements ICalEventController {
 
     async handleEvent(body: CalResponse): Promise<PushMessageResponse | undefined> {
         const event = body.triggerEvent;
-        const payload = body.payload;
+        const bookingObj = this._srv.booking.makeObj(body.payload);
         switch (event.toUpperCase()) {
             case 'BOOKING_CREATED':
-                return this.bookingCreated(payload);
+                return this.bookingCreated(bookingObj);
             case 'BOOKING_CANCELLED':
-                return this.bookingCancelled(payload);
+                return this.bookingCancelled(bookingObj);
             case 'BOOKING_RESCHEDULED':
-                return this.bookingRescheduled(payload);
+                return this.bookingRescheduled(bookingObj);
             default:
                 console.log(`received an unknown event: ${JSON.stringify(body)}`);
                 return Promise.reject(new Error(`received an unknown event: ${JSON.stringify(body)}`));
         }
     }
 
-    private async bookingCreated(payload: Payload) {
-        const bookingObj = this._srv.booking.makeObj(payload);
+    private async bookingCreated(bookingObj: BookingObj) {
         const hasLineID = this._srv.booking.hasLineID(bookingObj);
         if (!hasLineID) {
             console.error('line id is null');
@@ -59,8 +58,7 @@ export class CalEventController implements ICalEventController {
         });
     }
 
-    private async bookingRescheduled(payload: Payload) {
-        const bookingObj = this._srv.booking.makeObj(payload);
+    private async bookingRescheduled(bookingObj: BookingObj) {
         const hasLineID = this._srv.booking.hasLineID(bookingObj);
         if (!hasLineID) {
             console.error('line id is null');
@@ -79,8 +77,7 @@ export class CalEventController implements ICalEventController {
         });
     }
 
-    private async bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined> {
-        const bookingObj = this._srv.booking.makeObj(payload);
+    private async bookingCancelled(bookingObj: BookingObj): Promise<PushMessageResponse | undefined> {
         const hasLineID = this._srv.booking.hasLineID(bookingObj);
         if (!hasLineID) {
             console.error('line id is null');
