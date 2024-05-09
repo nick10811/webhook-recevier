@@ -73,6 +73,8 @@ The project utilizes the [Vitest](https://vitest.dev/) testing framework for uni
   > The output will be generated in the `./out/report` directory. Open `index.html` to view the report.
 
 ## Deployment
+The project is designed to be deployed on AWS Lambda. The deployment process involves building the project, archiving the project, and uploading the archive to the Lambda function.
+
 ### Archiving
 - Run `npm run build` to build the project.
   > The output will be generated in the `./build` directory.
