@@ -15,11 +15,14 @@ export class SheetsController {
     makeObj(bookingObj: BookingObj): SheetsObj {
         return {
             bookingId: bookingObj.bookingId,
+            updatedTimestamp: bookingObj.timestamp,
             name: bookingObj.attendee,
-            location: bookingObj.location,
-            datetime: bookingObj.duration,
+            phone: bookingObj.phone?? '',
+            lineid: bookingObj.lineid?? '',
+            duration: bookingObj.duration,
             timezone: bookingObj.timezone,
-            status: bookingObj.status,
+            location: bookingObj.location,
+            eventTitle: bookingObj.eventTitle,
         };
     }
 
@@ -30,7 +33,7 @@ export class SheetsController {
                 .appendSheetData(
                     Config.SPREADSHEET_ID,
                     sheetName,
-                    [[reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]]);
+                    [[reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]]);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to append reservation to sheets: ${e.message}`);
@@ -103,8 +106,7 @@ export class SheetsController {
                     Config.SPREADSHEET_ID,
                     sheetName,
                     `A${index+1}`,
-                    [reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]
-                )
+                    [reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to update reservation in sheets: ${e.message}`);

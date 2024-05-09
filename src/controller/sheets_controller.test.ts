@@ -8,25 +8,37 @@ describe('SheetsController.makeObj', () => {
     test('ok', () => {
         // arrange
         const arg: BookingObj = {
-            bookingId: 'bookingId',
-            rescheduleId: undefined,
-            status: 'confirmed',
-            greeting: 'Hello undefined',
-            location: 'event-location',
-            duration: '2024-04-12 13:45 - 14:00',
+            eventType: 'event-type',
+            timestamp: 'timestamp',
+            eventTitle: 'event-title',
+            bookingId: 'booking-id',
+            rescheduleId: 'reschedule-id',
+            status: 'status',
+            location: 'location',
+            videoCallURL: 'video-call-url',
+            startTime: 'start-time',
+            endTime: 'end-time',
             timezone: 'timezone',
-            attendee: 'unknown name',
-            rescheduleURI: 'https://example.com/reschedule/uid',
-            cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
+            duration: 'duration',
+            attendee: 'attendee',
+            email: 'email',
+            phone: 'phone',
+            lineid: 'lineid',
+            greeting: 'greeting',
+            rescheduleURI: 'reschedule-uri',
+            cancelURI: 'cancel-uri',
         };
 
         const want: SheetsObj = {
-            bookingId: 'bookingId',
-            name: 'unknown name',
-            location: 'event-location',
-            datetime: '2024-04-12 13:45 - 14:00',
+            bookingId: 'booking-id',
+            updatedTimestamp: 'timestamp',
+            name: 'attendee',
+            phone: 'phone',
+            lineid: 'lineid',
+            duration: 'duration',
             timezone: 'timezone',
-            status: 'confirmed',
+            location: 'location',
+            eventTitle: 'event-title',
         }
         const controller = new SheetsController(new GoogleService());
 
@@ -42,16 +54,13 @@ describe('SheetsController.appendReservation', () => {
     test('ok', async () => {
         // arrange
         const arg = {
-            bookingId: 'bookingId',
-            rescheduleId: undefined,
-            status: 'confirmed',
-            greeting: 'Hello undefined',
-            location: 'event-location',
-            duration: '2024-04-12 13:45 - 14:00',
+            bookingId: 'booking-id',
+            timestamp: 'timestamp',
+            attendee: 'attendee',
+            duration: 'duration',
             timezone: 'timezone',
-            attendee: 'whatever name',
-            rescheduleURI: 'https://example.com/reschedule/uid',
-            cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
+            location: 'event-location',
+            eventTitle: 'event-title',
         } as BookingObj;
 
         Config.SPREADSHEET_ID = 'spreadsheet-id';
@@ -61,7 +70,7 @@ describe('SheetsController.appendReservation', () => {
         const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockImplementation((spreadsheetId, sheetName, values) => {
             expect(spreadsheetId).equal('spreadsheet-id');
             expect(sheetName).equal('reservations');
-            expect(values).toEqual([['bookingId', 'whatever name', 'event-location', '2024-04-12 13:45 - 14:00', 'timezone', 'confirmed']]);
+            expect(values).toEqual([['booking-id', 'timestamp', '', 'attendee', '', 'duration', 'timezone', 'event-title']]);
             return Promise.resolve({ spreadsheetId: 'sheet-id' });
         });
 
@@ -75,19 +84,6 @@ describe('SheetsController.appendReservation', () => {
 
     test('GoogleService Error', async () => {
         // arrange
-        const arg: BookingObj = {
-            bookingId: 'whatever',
-            rescheduleId: 'whatever',
-            status: 'whatever',
-            greeting: 'whatever',
-            location: 'whatever',
-            duration: 'whatever',
-            timezone: 'whatever',
-            attendee: 'whatever',
-            rescheduleURI: 'whatever',
-            cancelURI: 'whatever',
-        };
-
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
 
@@ -96,7 +92,7 @@ describe('SheetsController.appendReservation', () => {
             .mockRejectedValue(new Error('whatever'));
 
         // act
-        const got = await controller.appendReservation(arg);
+        const got = await controller.appendReservation({} as BookingObj);
 
         // expect
         expect(appendSheetData).toHaveBeenCalledTimes(1);
@@ -106,7 +102,7 @@ describe('SheetsController.appendReservation', () => {
 
     test.skip('skip for real case', { timeout: 10000 }, async () => {
         // arrange
-        const arg: BookingObj = {
+        const arg = {
             bookingId: '0000001',
             rescheduleId: undefined,
             status: 'status',
@@ -117,7 +113,7 @@ describe('SheetsController.appendReservation', () => {
             attendee: 'unknown name',
             rescheduleURI: 'https://example.com/reschedule/uid',
             cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
-        };
+        } as BookingObj;
 
         Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
         Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
@@ -286,17 +282,15 @@ describe('SheetsController.updateReservation_Ok', () => {
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
 
-        const obj = {
+        const arg = {
             bookingId: 'booking-id',
             rescheduleId: 'reschedule-id',
-            status: 'updated',
-            greeting: 'greeting',
-            location: 'location',
+            timestamp: 'timestamp',
+            attendee: 'attendee',
             duration: 'duration',
             timezone: 'timezone',
-            attendee: 'attendee',
-            rescheduleURI: 'reschedule-uri',
-            cancelURI: 'cancel-uri',
+            location: 'event-location',
+            eventTitle: 'event-title',
         } as BookingObj;
         Config.SPREADSHEET_ID = 'spreadsheet-id';
 
@@ -312,12 +306,12 @@ describe('SheetsController.updateReservation_Ok', () => {
                 expect(spreadsheetId).equal('spreadsheet-id');
                 expect(sheetName).equal('reservations');
                 expect(range).equal('A1');
-                expect(values).toEqual(['booking-id', 'attendee', 'location', 'duration', 'timezone', 'updated']);
+                expect(values).toEqual(['booking-id', 'timestamp', '', 'attendee', '', 'duration', 'timezone', 'event-title']);
                 return Promise.resolve({ spreadsheetId: 'whatever' });
             });
 
         // act
-        const got = await controller.updateReservation(obj);
+        const got = await controller.updateReservation(arg);
 
         // expect
         expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
