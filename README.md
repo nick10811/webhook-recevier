@@ -17,8 +17,8 @@ The project is a webhook receiver that enables users to book an event on [Cal.co
 │   └── report/ (test report and coverage)
 ├── src/
 │   ├── config/
-│   │   │── allowed_line_text.json (allowedlist of LINE text)
-│   │   └── config.ts (configuration)
+│   │   │── config.ts (configuration)
+│   │   └── handled_line_text.json (handled LINE text)
 │   ├── controller/
 │   ├── locale/ (localization)
 │   ├── model/
