@@ -12,7 +12,7 @@
     "test:report": "vitest --root ./src --coverage --coverage.reportsDirectory=../out/report"
   },
   "keywords": [],
-  "author": "nick10811@gmail.com",
+  "author": "Nick Yang",
   "license": "MIT",
   "dependencies": {
     "@line/bot-sdk": "^9.1.0",
