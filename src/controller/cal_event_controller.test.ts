@@ -7,70 +7,10 @@ import { GoogleService, LineService } from '../service';
 import { ClientConfig } from '@line/bot-sdk';
 
 interface ICalEventControllerTest extends ICalEventController {
-    getLineID(payload: Payload): string | undefined;
     bookingCreated(payload: Payload);
     bookingCancelled(payload: Payload);
     bookingRescheduled(payload: Payload);
 }
-
-describe('CalEventController.getLineID_InputError', () => {
-    type Args = {
-        payload: any;
-    };
-
-    type TestCase = {
-        name: string,
-        args: Args,
-        want: string | undefined;
-    };
-
-    const tests: TestCase[] = [
-        {
-            name: 'lineid is null',
-            args: { payload: { responses: {} } },
-            want: undefined,
-        },
-        {
-            name: 'lineid.value is null',
-            args: { payload: { responses: { lineid: {} } } },
-            want: undefined,
-        }
-    ];
-
-    tests.forEach(({ name, args, want }) => {
-        test(name, () => {
-            // arrange
-            const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
-
-            // act
-            const got = ctl.getLineID(args.payload as Payload);
-
-            // expect
-            expect(got).toBeUndefined();
-        });
-    });
-});
-
-describe('CalEventController.getLineID_OK', () => {
-    test('ok', () => {
-        // arrange
-        const payload = {
-            responses: {
-                lineid: {
-                    value: 'whatever',
-                },
-            },
-        };
-
-        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
-
-        // act
-        const got = ctl.getLineID(payload as Payload);
-
-        // expect
-        expect(got).toBe('whatever');
-    });
-});
 
 describe('CalEventController.bookingCreated_OK', () => {
     test('ok', async () => {
@@ -82,7 +22,7 @@ describe('CalEventController.bookingCreated_OK', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
             .mockResolvedValue(undefined);
@@ -106,13 +46,23 @@ describe('CalEventController.bookingCreated_OK', () => {
 describe('CalEventController.bookingCreated_Error', () => {
     test('lineid is null', async () => {
         // arrange
-        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
+        const srv: CalServices = {
+            line: {} as any,
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+        const makeObj = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({} as BookingObj);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
         try {
             // act
             await ctl.bookingCreated({ responses: {} } as Payload);
         } catch (err) {
             // expect
+            expect(makeObj).toHaveBeenCalledTimes(1);
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('line id is null');
         }
@@ -127,7 +77,7 @@ describe('CalEventController.bookingCreated_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
             .mockRejectedValue(new Error('whatever'));
@@ -155,7 +105,7 @@ describe('CalEventController.bookingCreated_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
             .mockResolvedValue(undefined);
@@ -189,7 +139,7 @@ describe('CalEventController.bookingCancelled_OK', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+            .mockReturnValue({ lineid: 'whatever', bookingId: 'book-id' } as BookingObj);
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
             .mockImplementation((bookingId) => {
@@ -218,7 +168,16 @@ describe('CalEventController.bookingCancelled_OK', () => {
 describe('CalEventController.bookingCancelled_Error', () => {
     test('lineid is null', async () => {
         // arrange
-        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
+        const srv: CalServices = {
+            line: {} as any,
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+        const makeObj = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({} as BookingObj);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
         try {
             // act
@@ -239,7 +198,7 @@ describe('CalEventController.bookingCancelled_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+            .mockReturnValue({ lineid: 'whatever', bookingId: 'book-id' } as BookingObj);
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
             .mockRejectedValue(new Error('whatever'));
@@ -267,7 +226,7 @@ describe('CalEventController.bookingCancelled_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+            .mockReturnValue({ lineid: 'whatever', bookingId: 'book-id' } as BookingObj);
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
             .mockResolvedValue(undefined);
@@ -301,7 +260,7 @@ describe('CalEventController.bookingRescheduled_OK', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const updateReservation = vi
             .spyOn(srv.sheets, 'updateReservation')
             .mockResolvedValue(undefined);
@@ -325,7 +284,16 @@ describe('CalEventController.bookingRescheduled_OK', () => {
 describe('CalEventController.bookingRescheduled_Error', () => {
     test('lineid is null', async () => {
         // arrange
-        const ctl = new CalEventController({} as CalServices) as ICalEventController as ICalEventControllerTest;
+        const srv: CalServices = {
+            line: {} as any,
+            booking: new BookingController(),
+            sheets: new SheetsController(new GoogleService()),
+        }
+        const makeObj = vi
+            .spyOn(srv.booking, 'makeObj')
+            .mockReturnValue({} as BookingObj);
+
+        const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
         try {
             // act
@@ -346,7 +314,7 @@ describe('CalEventController.bookingRescheduled_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const updateReservation = vi
             .spyOn(srv.sheets, 'updateReservation')
             .mockRejectedValue(new Error('whatever'));
@@ -374,7 +342,7 @@ describe('CalEventController.bookingRescheduled_Error', () => {
         }
         const makeObj = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const updateReservation = vi
             .spyOn(srv.sheets, 'updateReservation')
             .mockResolvedValue(undefined);
@@ -425,7 +393,7 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingCreated = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const appendReservation = vi
             .spyOn(srv.sheets, 'appendReservation')
             .mockResolvedValue(undefined);
@@ -456,7 +424,7 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingCancelled = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({ bookingId: 'book-id' } as BookingObj);
+            .mockReturnValue({ lineid: 'whatever', bookingId: 'book-id' } as BookingObj);
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
             .mockResolvedValue(undefined);
@@ -487,7 +455,7 @@ describe('CalEventController.handleEvent_OK', () => {
 
         const bookingRescheduled = vi
             .spyOn(srv.booking, 'makeObj')
-            .mockReturnValue({} as BookingObj);
+            .mockReturnValue({ lineid: 'whatever' } as BookingObj);
         const updateReservation = vi
             .spyOn(srv.sheets, 'updateReservation')
             .mockResolvedValue(undefined);

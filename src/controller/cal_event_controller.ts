@@ -40,13 +40,13 @@ export class CalEventController implements ICalEventController {
     }
 
     private async bookingCreated(payload: Payload) {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
+        const bookingObj = this._srv.booking.makeObj(payload);
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
             return Promise.reject(new Error('line id is null'));
         }
-
-        const bookingObj = this._srv.booking.makeObj(payload);
+        
         const err = await this._srv.sheets.appendReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to append reservation to sheet: ${err.message}`);
@@ -54,19 +54,19 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCreated(bookingObj, t('title.booking_created'))],
         });
     }
 
     private async bookingRescheduled(payload: Payload) {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
+        const bookingObj = this._srv.booking.makeObj(payload);
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
             return Promise.reject(new Error('line id is null'));
         }
 
-        const bookingObj = this._srv.booking.makeObj(payload);
         const err = await this._srv.sheets.updateReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to update reservation to sheet: ${err.message}`);
@@ -74,19 +74,19 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCreated(bookingObj, t('title.booking_rescheduled'))],
         });
     }
 
     private async bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined> {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
-            return Promise.resolve(undefined);
+        const bookingObj = this._srv.booking.makeObj(payload);
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
+            return Promise.reject(new Error('line id is null'));
         }
 
-        const bookingObj = this._srv.booking.makeObj(payload);
         const err = await this._srv.sheets.deleteReservation(bookingObj.bookingId);
         if (err instanceof Error) {
             console.error(`failed to delete reservation from sheet: ${err.message}`);
@@ -94,20 +94,8 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCanceled(bookingObj)],
         });
-    }
-
-    private getLineID(payload: Payload): string | undefined {
-        const responses = payload.responses;
-        if (!responses.lineid || !responses.lineid.value) {
-            console.log('line id is null');
-            return;
-        }
-
-        const lineID = responses.lineid.value;
-        console.log('line id: ' + lineID);
-        return lineID;
     }
 }
