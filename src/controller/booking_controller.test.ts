@@ -77,77 +77,54 @@ describe('makeDurationString', () => {
 describe('makeObj', () => {
     test('ok without reschedule', () => {
         // arrange
-        const arg: Payload = {
-            bookerUrl: 'https://example.com',
-            title: 'event-title',
-            startTime: 'start-time',
-            endTime: 'end-time',
-            responses: {
-                name: undefined,
-                location: undefined,
-                email: undefined,
-                phone: undefined,
-                title: undefined,
-                notes: undefined,
-                guests: undefined,
-                rescheduleReason: undefined,
-                lineid: undefined
-            },
-            location: "event-location",
-            uid: 'uid',
-            type: '',
-            description: '',
-            additionalNotes: '',
-            customInputs: undefined,
-            userFieldsResponses: undefined,
-            attendees: [],
-            conferenceCredentialId: 0,
-            destinationCalendar: [],
-            hideCalendarNotes: false,
-            requiresConfirmation: false,
-            eventTypeId: 0,
-            seatsShowAttendees: false,
-            seatsShowAvailabilityCount: false,
-            iCalUID: '',
-            iCalSequence: 0,
-            conferenceData: undefined,
-            appsStatus: [],
-            eventTitle: '',
-            eventDescription: '',
-            price: 0,
-            currency: '',
-            length: 0,
-            bookingId: 111,
-            rescheduleId: 222,
-            rescheduleUid: 'reschedule-uid',
-            rescheduleStartTime: 'reschedule-start-time',
-            rescheduleEndTime: 'reschedule-end-time',
-            metadata: undefined,
-            status: 'status',
-            organizer: {
-                id: 0,
-                name: '',
-                email: '',
-                username: '',
-                timeZone: 'timezone',
-                language: undefined,
-                timeFormat: '',
-                utcOffset: 0
-            }
+        const arg = {
+            triggerEvent: 'BOOKING_CREATED',
+            createdAt: '2021-08-01T00:00:00Z',
+            payload: {
+                bookerUrl: 'https://booker.com',
+                uid: 'uid',
+                eventTitle: 'event-title',
+                bookingId: 1,
+                status: 'status',
+                location: 'location',
+                metadata: {
+                    videoCallUrl: 'video-call-url',
+                },
+                startTime: '2021-08-01T00:00:00Z',
+                endTime: '2021-08-01T01:00:00Z',
+                organizer: {
+                    timeZone: 'America/New_York',
+                },
+                responses: {
+                    name: { value: 'name' },
+                    email: { value: 'email' },
+                    phone: { value: 'phone' },
+                    lineid: { value: 'lineid' },
+                },
+            } as Payload,
         };
 
-        const want: BookingObj = {
-            bookingId: '111',
-            rescheduleId: '222',
+        const want = {
+            eventType: 'BOOKING_CREATED',
+            timestamp: '2021-08-01T00:00:00Z',
+            eventTitle: 'event-title',
+            bookingId: '1',
+            rescheduleId: undefined,
             status: 'status',
-            greeting: 'Hello undefined',
-            location: 'event-location',
-            duration: 'Invalid date - Invalid date',
-            timezone: 'timezone',
-            attendee: 'unknown name',
-            rescheduleURI: 'https://example.com/reschedule/uid',
-            cancelURI: 'https://example.com/booking/uid?cancel=true&allRemainingBookings=false',
-        };
+            location: 'location',
+            videoCallURL: 'video-call-url',
+            startTime: '2021-08-01T00:00:00Z',
+            endTime: '2021-08-01T01:00:00Z',
+            timezone: 'America/New_York',
+            duration: '2021-07-31 20:00 - 21:00',
+            attendee: 'name',
+            email: 'email',
+            phone: 'phone',
+            lineid: 'lineid',
+            greeting: 'Hello name',
+            rescheduleURI: 'https://booker.com/reschedule/uid',
+            cancelURI: 'https://booker.com/booking/uid?cancel=true&allRemainingBookings=false',
+        } as BookingObj;
 
         // arrange
         const ctl = new BookingController();
@@ -157,5 +134,111 @@ describe('makeObj', () => {
 
         // expect
         expect(got).toMatchObject(want);
+    });
+
+    test('ok with reschedule', () => {
+        // arrange
+        const arg = {
+            triggerEvent: 'BOOKING_CREATED',
+            createdAt: '2021-08-01T00:00:00Z',
+            payload: {
+                bookerUrl: 'https://booker.com',
+                uid: 'uid',
+                eventTitle: 'event-title',
+                bookingId: 1,
+                rescheduleId: 2,
+                status: 'status',
+                location: 'location',
+                metadata: {
+                    videoCallUrl: 'video-call-url',
+                },
+                startTime: '2021-08-01T00:00:00Z',
+                endTime: '2021-08-01T01:00:00Z',
+                organizer: {
+                    timeZone: 'America/New_York',
+                },
+                responses: {
+                    name: { value: 'name' },
+                    email: { value: 'email' },
+                    phone: { value: 'phone' },
+                    lineid: { value: 'lineid' },
+                },
+            } as Payload,
+        };
+
+        const want = {
+            eventType: 'BOOKING_CREATED',
+            timestamp: '2021-08-01T00:00:00Z',
+            eventTitle: 'event-title',
+            bookingId: '1',
+            rescheduleId: '2',
+            status: 'status',
+            location: 'location',
+            videoCallURL: 'video-call-url',
+            startTime: '2021-08-01T00:00:00Z',
+            endTime: '2021-08-01T01:00:00Z',
+            timezone: 'America/New_York',
+            duration: '2021-07-31 20:00 - 21:00',
+            attendee: 'name',
+            email: 'email',
+            phone: 'phone',
+            lineid: 'lineid',
+            greeting: 'Hello name',
+            rescheduleURI: 'https://booker.com/reschedule/uid',
+            cancelURI: 'https://booker.com/booking/uid?cancel=true&allRemainingBookings=false',
+        } as BookingObj;
+
+        // arrange
+        const ctl = new BookingController();
+
+        // act
+        const got = ctl.makeObj(arg);
+
+        // expect
+        expect(got).toMatchObject(want);
+    });
+});
+
+describe('hasLineID', () => {
+    type Args = {
+        lineid: string | undefined;
+    };
+
+    type TestCase = {
+        name: string,
+        args: Args,
+        want: boolean;
+    };
+
+    const tests: TestCase[] = [
+        {
+            name: 'false: undefined',
+            args: { lineid: undefined },
+            want: false,
+        },
+        {
+            name: 'false: empty string',
+            args: { lineid: '' },
+            want: false,
+        },
+        {
+            name: 'true: non-empty string',
+            args: { lineid: 'whatever' },
+            want: true,
+        }
+    ];
+
+    tests.forEach(({ name, args, want }) => {
+        test(name, () => {
+            // arrange
+            const ctl = new BookingController();
+            const obj = { lineid: args.lineid } as BookingObj;
+
+            // act
+            const got = ctl.hasLineID(obj);
+
+            // expect
+            expect(got).toBe(want);
+        });
     });
 });

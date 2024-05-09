@@ -1,7 +1,7 @@
 import { PushMessageResponse } from '@line/bot-sdk/dist/messaging-api/api';
 import template from '../template';
 import { BookingController } from './booking_controller';
-import { CalResponse, Payload } from '../model';
+import { BookingObj, CalResponse } from '../model';
 import { SheetsController } from './sheets_controller';
 import { LineService } from '../service';
 import { t } from 'i18next';
@@ -24,29 +24,27 @@ export class CalEventController implements ICalEventController {
     }
 
     async handleEvent(body: CalResponse): Promise<PushMessageResponse | undefined> {
-        const event = body.triggerEvent;
-        const payload = body.payload;
-        switch (event.toUpperCase()) {
+        const bookingObj = this._srv.booking.makeObj(body);
+        switch (bookingObj.eventType.toUpperCase()) {
             case 'BOOKING_CREATED':
-                return this.bookingCreated(payload);
+                return this.bookingCreated(bookingObj);
             case 'BOOKING_CANCELLED':
-                return this.bookingCancelled(payload);
+                return this.bookingCancelled(bookingObj);
             case 'BOOKING_RESCHEDULED':
-                return this.bookingRescheduled(payload);
+                return this.bookingRescheduled(bookingObj);
             default:
                 console.log(`received an unknown event: ${JSON.stringify(body)}`);
                 return Promise.reject(new Error(`received an unknown event: ${JSON.stringify(body)}`));
         }
     }
 
-    private async bookingCreated(payload: Payload) {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
+    private async bookingCreated(bookingObj: BookingObj) {
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
             return Promise.reject(new Error('line id is null'));
         }
-
-        const bookingObj = this._srv.booking.makeObj(payload);
+        
         const err = await this._srv.sheets.appendReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to append reservation to sheet: ${err.message}`);
@@ -54,19 +52,18 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCreated(bookingObj, t('title.booking_created'))],
         });
     }
 
-    private async bookingRescheduled(payload: Payload) {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
+    private async bookingRescheduled(bookingObj: BookingObj) {
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
             return Promise.reject(new Error('line id is null'));
         }
 
-        const bookingObj = this._srv.booking.makeObj(payload);
         const err = await this._srv.sheets.updateReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to update reservation to sheet: ${err.message}`);
@@ -74,19 +71,18 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCreated(bookingObj, t('title.booking_rescheduled'))],
         });
     }
 
-    private async bookingCancelled(payload: Payload): Promise<PushMessageResponse | undefined> {
-        const lineID = this.getLineID(payload);
-
-        if (!lineID) {
-            return Promise.resolve(undefined);
+    private async bookingCancelled(bookingObj: BookingObj): Promise<PushMessageResponse | undefined> {
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
+            return Promise.reject(new Error('line id is null'));
         }
 
-        const bookingObj = this._srv.booking.makeObj(payload);
         const err = await this._srv.sheets.deleteReservation(bookingObj.bookingId);
         if (err instanceof Error) {
             console.error(`failed to delete reservation from sheet: ${err.message}`);
@@ -94,20 +90,8 @@ export class CalEventController implements ICalEventController {
         }
 
         return this._srv.line.pushMessage({
-            to: lineID,
+            to: bookingObj.lineid as string,
             messages: [template.bookingCanceled(bookingObj)],
         });
-    }
-
-    private getLineID(payload: Payload): string | undefined {
-        const responses = payload.responses;
-        if (!responses.lineid || !responses.lineid.value) {
-            console.log('line id is null');
-            return;
-        }
-
-        const lineID = responses.lineid.value;
-        console.log('line id: ' + lineID);
-        return lineID;
     }
 }

@@ -113,6 +113,7 @@ export interface Guests {
 
 export interface Phone {
     label: string;
+    value: string;
     isHidden: boolean;
 }
 
