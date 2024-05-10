@@ -17,6 +17,9 @@ type Config = NodeJS.ProcessEnv & {
 
     // CAL.COM
     BOOKING_URL: string;
+
+    // GOOGLE SHEETS
+    SPREADSHEET_ID: string;
 }
 
 export default process.env as Config;

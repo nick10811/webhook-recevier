@@ -1,8 +1,8 @@
+import Config from '../config';
 import { BookingObj, SheetsObj } from '../model';
 import { GoogleService } from '../service';
 
-const spreadsheetId = '1348FLkrFKgTuBClszAG30TLIY2pKtCVeEZm5SzVPURQ';
-const sheetName = 'reservations';
+const bookSheetName = 'Booking';
 const sheetId = 0;
 
 export class SheetsController {
@@ -15,11 +15,14 @@ export class SheetsController {
     makeObj(bookingObj: BookingObj): SheetsObj {
         return {
             bookingId: bookingObj.bookingId,
+            updatedTimestamp: bookingObj.timestamp,
             name: bookingObj.attendee,
-            location: bookingObj.location,
-            datetime: bookingObj.duration,
+            phone: bookingObj.phone?? '',
+            lineid: bookingObj.lineid?? '',
+            duration: bookingObj.duration,
             timezone: bookingObj.timezone,
-            status: bookingObj.status,
+            location: bookingObj.location,
+            eventTitle: bookingObj.eventTitle,
         };
     }
 
@@ -28,9 +31,9 @@ export class SheetsController {
         try {
             await this._srv
                 .appendSheetData(
-                    spreadsheetId,
-                    sheetName,
-                    [[reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]]);
+                    Config.SPREADSHEET_ID,
+                    bookSheetName,
+                    [[reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]]);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to append reservation to sheets: ${e.message}`);
@@ -44,7 +47,7 @@ export class SheetsController {
 
     async findRowIndexOfReservation(bookingId: string) {
         try {
-            const reservations: string[][] = await this._srv.getSheetData(spreadsheetId, sheetName) as string[][];
+            const reservations: string[][] = await this._srv.getSheetData(Config.SPREADSHEET_ID, bookSheetName) as string[][];
 
             // retrieve the row number of the reservation
             let row = -1;
@@ -74,7 +77,7 @@ export class SheetsController {
         }
 
         try {
-            await this._srv.deleteSheetRow(spreadsheetId, sheetId, index);
+            await this._srv.deleteSheetRow(Config.SPREADSHEET_ID, sheetId, index);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to delete reservation in sheets: ${e.message}`);
@@ -100,11 +103,10 @@ export class SheetsController {
         try {
             await this._srv
                 .updateSheetRow(
-                    spreadsheetId,
-                    sheetName,
+                    Config.SPREADSHEET_ID,
+                    bookSheetName,
                     `A${index+1}`,
-                    [reservation.bookingId, reservation.name, reservation.location, reservation.datetime, reservation.timezone, reservation.status]
-                )
+                    [reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to update reservation in sheets: ${e.message}`);
