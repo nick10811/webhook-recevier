@@ -225,6 +225,7 @@ describe('SheetsController.deleteReservation_Ok', () => {
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
         Config.SPREADSHEET_ID = 'spreadsheet-id';
+        Config.SHEET_ID_BOOK = '123';
 
         const findRowIndexOfReservation = vi
             .spyOn(controller, 'findRowIndexOfReservation')
@@ -236,7 +237,7 @@ describe('SheetsController.deleteReservation_Ok', () => {
             .spyOn(mockGoogleService, 'deleteSheetRow')
             .mockImplementation((spreadsheetId, sheetId, indexOfRow) => {
                 expect(spreadsheetId).equal('spreadsheet-id');
-                expect(sheetId).equal(0);
+                expect(sheetId).equal(123);
                 expect(indexOfRow).equal(1);
                 return Promise.resolve({ spreadsheetId: 'whatever' });
             });

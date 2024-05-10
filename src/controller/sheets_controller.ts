@@ -3,7 +3,6 @@ import { BookingObj, SheetsObj } from '../model';
 import { GoogleService } from '../service';
 
 const bookSheetName = 'Booking';
-const sheetId = 0;
 
 export class SheetsController {
     private _srv: GoogleService;
@@ -77,7 +76,7 @@ export class SheetsController {
         }
 
         try {
-            await this._srv.deleteSheetRow(Config.SPREADSHEET_ID, sheetId, index);
+            await this._srv.deleteSheetRow(Config.SPREADSHEET_ID, Number(Config.SHEET_ID_BOOK), index);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to delete reservation in sheets: ${e.message}`);

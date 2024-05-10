@@ -20,6 +20,8 @@ type Config = NodeJS.ProcessEnv & {
 
     // GOOGLE SHEETS
     SPREADSHEET_ID: string;
+    SHEET_ID_BOOK: string;
+    SHEET_ID_CANCEL: string;
 }
 
 export default process.env as Config;
