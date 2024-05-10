@@ -2,9 +2,10 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// the .env file only allows string values
 type Config = NodeJS.ProcessEnv & {
     ENVIRONMENT: 'dev' | 'prod';
-    PORT: number;
+    PORT: string;
 
     // LINE
     CHANNEL_ID: string;
@@ -20,6 +21,8 @@ type Config = NodeJS.ProcessEnv & {
 
     // GOOGLE SHEETS
     SPREADSHEET_ID: string;
+    SHEET_ID_BOOK: string;
+    SHEET_ID_CANCEL: string;
 }
 
 export default process.env as Config;

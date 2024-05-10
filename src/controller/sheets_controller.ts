@@ -3,7 +3,7 @@ import { BookingObj, SheetsObj } from '../model';
 import { GoogleService } from '../service';
 
 const bookSheetName = 'Booking';
-const sheetId = 0;
+const cancelSheetName = 'Cancel';
 
 export class SheetsController {
     private _srv: GoogleService;
@@ -70,14 +70,22 @@ export class SheetsController {
         }
     }
 
-    async deleteReservation(bookingId: string) {
-        const index = await this.findRowIndexOfReservation(bookingId);
+    async deleteReservation(obj: BookingObj) {
+        const index = await this.findRowIndexOfReservation(obj.bookingId);
         if (index instanceof Error || index < 0) {
             return new Error('reservation not found');
         }
 
+        const cancellation = this.makeObj(obj);
         try {
-            await this._srv.deleteSheetRow(Config.SPREADSHEET_ID, sheetId, index);
+            // delete a reservation on the sheet, Booking
+            await this._srv.deleteSheetRow(Config.SPREADSHEET_ID, Number(Config.SHEET_ID_BOOK), index);
+            // append a cancellation record to the sheet, Cancel
+            await this._srv.appendSheetData(
+                Config.SPREADSHEET_ID, 
+                cancelSheetName, 
+                [[cancellation.bookingId, cancellation.updatedTimestamp, cancellation.lineid, cancellation.name, cancellation.phone, cancellation.duration, cancellation.timezone, cancellation.eventTitle]]
+            );
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`failed to delete reservation in sheets: ${e.message}`);
