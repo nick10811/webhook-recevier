@@ -2,9 +2,10 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// the .env file only allows string values
 type Config = NodeJS.ProcessEnv & {
     ENVIRONMENT: 'dev' | 'prod';
-    PORT: number;
+    PORT: string;
 
     // LINE
     CHANNEL_ID: string;

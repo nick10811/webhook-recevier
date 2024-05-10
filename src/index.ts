@@ -105,7 +105,7 @@ if (Config.ENVIRONMENT === 'prod') {
     module.exports.handler = serverless(app);
 } else {
     // listen on port
-    const port = Config.PORT || 3000;
+    const port = Number(Config.PORT) || 3000;
     app.listen(port, () => {
         console.log(`server is listening on ${port}`);
     });
