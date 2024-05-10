@@ -230,7 +230,7 @@ describe('SheetsController.deleteReservation_Ok', () => {
         const findRowIndexOfReservation = vi
             .spyOn(controller, 'findRowIndexOfReservation')
             .mockImplementation((bookingId) => {
-                expect(bookingId).equal('whatever');
+                expect(bookingId).equal('booking-id');
                 return Promise.resolve(1);
             });
         const deleteSheetRow = vi
@@ -241,13 +241,81 @@ describe('SheetsController.deleteReservation_Ok', () => {
                 expect(indexOfRow).equal(1);
                 return Promise.resolve({ spreadsheetId: 'whatever' });
             });
+        const appendSheetData = vi
+            .spyOn(mockGoogleService, 'appendSheetData')
+            .mockImplementation((_spreadsheetId, sheetName, values) => {
+                expect(sheetName).equal('Cancel');
+                expect(values).toEqual([['booking-id', 'timestamp', 'lineid', 'attendee', 'phone', 'duration', 'timezone', 'event-title']])
+                return Promise.resolve({ spreadsheetId: 'whatever' });
+            });
+
+        const arg = {
+            eventType: 'event-type',
+            timestamp: 'timestamp',
+            eventTitle: 'event-title',
+            bookingId: 'booking-id',
+            rescheduleId: 'reschedule-id',
+            status: 'status',
+            location: 'location',
+            videoCallURL: 'video-call-url',
+            startTime: 'start-time',
+            endTime: 'end-time',
+            timezone: 'timezone',
+            duration: 'duration',
+            attendee: 'attendee',
+            email: 'email',
+            phone: 'phone',
+            lineid: 'lineid',
+            greeting: 'greeting',
+            rescheduleURI: 'reschedule-uri',
+            cancelURI: 'cancel-uri',
+        } as BookingObj;
 
         // act
-        const got = await controller.deleteReservation('whatever');
+        const got = await controller.deleteReservation(arg);
 
         // expect
         expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
         expect(deleteSheetRow).toHaveBeenCalledTimes(1);
+        expect(appendSheetData).toHaveBeenCalledTimes(1);
+        expect(got).toBeUndefined();
+    });
+
+    test.skip('skip for real case', { timeout: 10000 }, async () => {
+        // arrange
+        const arg = {
+            eventType: 'event-type',
+            timestamp: 'timestamp',
+            eventTitle: 'event-title',
+            bookingId: 'booking-id',
+            rescheduleId: 'reschedule-id',
+            status: 'status',
+            location: 'location',
+            videoCallURL: 'video-call-url',
+            startTime: 'start-time',
+            endTime: 'end-time',
+            timezone: 'timezone',
+            duration: 'duration',
+            attendee: 'attendee',
+            email: 'email',
+            phone: 'phone',
+            lineid: 'lineid',
+            greeting: 'greeting',
+            rescheduleURI: 'reschedule-uri',
+            cancelURI: 'cancel-uri',
+        } as BookingObj;
+
+        Config.GOOGLE_SERVICE_ACCOUNT_EMAIL = 'whatever';
+        Config.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = 'whatever';
+        Config.SPREADSHEET_ID = 'whatever';
+        Config.SHEET_ID_BOOK = '0';
+        Config.SHEET_ID_CANCEL = '1109838148';
+        const controller = new SheetsController(new GoogleService());
+
+        // act
+        const got = await controller.deleteReservation(arg);
+
+        // expect
         expect(got).toBeUndefined();
     });
 });
@@ -260,7 +328,7 @@ describe('SheetsController.deleteReservation_Error', () => {
         const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(-1);
 
         // act
-        const got = await controller.deleteReservation('whatever');
+        const got = await controller.deleteReservation({} as BookingObj);
 
         // expect
         expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
@@ -268,7 +336,7 @@ describe('SheetsController.deleteReservation_Error', () => {
         expect((got as Error).message).equal('reservation not found');
     });
 
-    test('GoogleService Error', async () => {
+    test('GoogleService.deleteSheetRow Error', async () => {
         // arrange
         const mockGoogleService = new GoogleService();
         const controller = new SheetsController(mockGoogleService);
@@ -277,11 +345,31 @@ describe('SheetsController.deleteReservation_Error', () => {
         const deleteSheetRow = vi.spyOn(mockGoogleService, 'deleteSheetRow').mockRejectedValue(new Error('whatever'));
 
         // act
-        const got = await controller.deleteReservation('whatever');
+        const got = await controller.deleteReservation({} as BookingObj);
 
         // expect
         expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
         expect(deleteSheetRow).toHaveBeenCalledTimes(1);
+        expect(got).toBeInstanceOf(Error);
+        expect((got as Error).message).equal('failed to delete reservation in sheets: whatever');
+    });
+
+    test('GoogleService.appendSheetData Error', async () => {
+        // arrange
+        const mockGoogleService = new GoogleService();
+        const controller = new SheetsController(mockGoogleService);
+
+        const findRowIndexOfReservation = vi.spyOn(controller, 'findRowIndexOfReservation').mockResolvedValue(1);
+        const deleteSheetRow = vi.spyOn(mockGoogleService, 'deleteSheetRow').mockResolvedValue({ spreadsheetId: 'whatever' });
+        const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockRejectedValue(new Error('whatever'));
+
+        // act
+        const got = await controller.deleteReservation({} as BookingObj);
+
+        // expect
+        expect(findRowIndexOfReservation).toHaveBeenCalledTimes(1);
+        expect(deleteSheetRow).toHaveBeenCalledTimes(1);
+        expect(appendSheetData).toHaveBeenCalledTimes(1);
         expect(got).toBeInstanceOf(Error);
         expect((got as Error).message).equal('failed to delete reservation in sheets: whatever');
     });

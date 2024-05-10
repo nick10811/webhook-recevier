@@ -83,7 +83,7 @@ export class CalEventController implements ICalEventController {
             return Promise.reject(new Error('line id is null'));
         }
 
-        const err = await this._srv.sheets.deleteReservation(bookingObj.bookingId);
+        const err = await this._srv.sheets.deleteReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to delete reservation from sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to delete reservation from sheet: ${err.message}`));

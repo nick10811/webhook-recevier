@@ -355,8 +355,8 @@ describe('CalEventController.bookingCancelled_OK', () => {
         }
         const deleteReservation = vi
             .spyOn(srv.sheets, 'deleteReservation')
-            .mockImplementation((bookingId) => {
-                expect(bookingId).toBe('book-id');
+            .mockImplementation((obj) => {
+                expect(obj).toMatchObject({ lineid: 'whatever', bookingId: 'book-id' });
                 return Promise.resolve(undefined);
             });
         const pushMessage = vi
