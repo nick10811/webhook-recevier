@@ -2,7 +2,7 @@ import Config from '../config';
 import { BookingObj, SheetsObj } from '../model';
 import { GoogleService } from '../service';
 
-const sheetName = 'reservations';
+const bookSheetName = 'Booking';
 const sheetId = 0;
 
 export class SheetsController {
@@ -32,7 +32,7 @@ export class SheetsController {
             await this._srv
                 .appendSheetData(
                     Config.SPREADSHEET_ID,
-                    sheetName,
+                    bookSheetName,
                     [[reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]]);
         } catch (e) {
             if (e instanceof Error) {
@@ -47,7 +47,7 @@ export class SheetsController {
 
     async findRowIndexOfReservation(bookingId: string) {
         try {
-            const reservations: string[][] = await this._srv.getSheetData(Config.SPREADSHEET_ID, sheetName) as string[][];
+            const reservations: string[][] = await this._srv.getSheetData(Config.SPREADSHEET_ID, bookSheetName) as string[][];
 
             // retrieve the row number of the reservation
             let row = -1;
@@ -104,7 +104,7 @@ export class SheetsController {
             await this._srv
                 .updateSheetRow(
                     Config.SPREADSHEET_ID,
-                    sheetName,
+                    bookSheetName,
                     `A${index+1}`,
                     [reservation.bookingId, reservation.updatedTimestamp, reservation.lineid, reservation.name, reservation.phone, reservation.duration, reservation.timezone, reservation.eventTitle]);
         } catch (e) {

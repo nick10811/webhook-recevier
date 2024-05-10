@@ -69,7 +69,7 @@ describe('SheetsController.appendReservation', () => {
 
         const appendSheetData = vi.spyOn(mockGoogleService, 'appendSheetData').mockImplementation((spreadsheetId, sheetName, values) => {
             expect(spreadsheetId).equal('spreadsheet-id');
-            expect(sheetName).equal('reservations');
+            expect(sheetName).equal('Booking');
             expect(values).toEqual([['booking-id', 'timestamp', '', 'attendee', '', 'duration', 'timezone', 'event-title']]);
             return Promise.resolve({ spreadsheetId: 'sheet-id' });
         });
@@ -175,7 +175,7 @@ describe('SheetsController.findRowIndexOfReservation_Ok', () => {
 
             const getSheetData = vi.spyOn(mockGoogleService, 'getSheetData').mockImplementation((spreadsheetId, sheetName) => {
                 expect(spreadsheetId).equal('spreadsheet-id');
-                expect(sheetName).equal('reservations');
+                expect(sheetName).equal('Booking');
                 return Promise.resolve(args.sheetData);
             });
 
@@ -304,7 +304,7 @@ describe('SheetsController.updateReservation_Ok', () => {
             .spyOn(mockGoogleService, 'updateSheetRow')
             .mockImplementation((spreadsheetId, sheetName, range, values) => {
                 expect(spreadsheetId).equal('spreadsheet-id');
-                expect(sheetName).equal('reservations');
+                expect(sheetName).equal('Booking');
                 expect(range).equal('A1');
                 expect(values).toEqual(['booking-id', 'timestamp', '', 'attendee', '', 'duration', 'timezone', 'event-title']);
                 return Promise.resolve({ spreadsheetId: 'whatever' });
