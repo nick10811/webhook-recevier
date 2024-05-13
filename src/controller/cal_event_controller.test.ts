@@ -178,6 +178,9 @@ describe('CalEventController.bookingCreated_Error', () => {
             booking: new BookingController(),
             sheets: new SheetsController(new GoogleService()),
         }
+        const appendReservation = vi
+            .spyOn(srv.sheets, 'appendReservation')
+            .mockResolvedValue(undefined);
 
         const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
@@ -186,6 +189,7 @@ describe('CalEventController.bookingCreated_Error', () => {
             await ctl.bookingCreated({} as BookingObj);
         } catch (err) {
             // expect
+            expect(appendReservation).toHaveBeenCalledTimes(1);
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('line id is null');
         }
@@ -279,6 +283,9 @@ describe('CalEventController.bookingRescheduled_Error', () => {
             booking: new BookingController(),
             sheets: new SheetsController(new GoogleService()),
         }
+        const updateReservation = vi
+            .spyOn(srv.sheets, 'updateReservation')
+            .mockResolvedValue(undefined);
 
         const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
@@ -287,6 +294,7 @@ describe('CalEventController.bookingRescheduled_Error', () => {
             await ctl.bookingRescheduled({} as BookingObj);
         } catch (err) {
             // expect
+            expect(updateReservation).toHaveBeenCalledTimes(1);
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('line id is null');
         }
@@ -383,6 +391,9 @@ describe('CalEventController.bookingCancelled_Error', () => {
             booking: new BookingController(),
             sheets: new SheetsController(new GoogleService()),
         }
+        const deleteReservation = vi
+            .spyOn(srv.sheets, 'deleteReservation')
+            .mockResolvedValue(undefined);
 
         const ctl = new CalEventController(srv) as ICalEventController as ICalEventControllerTest;
 
@@ -391,6 +402,7 @@ describe('CalEventController.bookingCancelled_Error', () => {
             await ctl.bookingCancelled({} as BookingObj);
         } catch (err) {
             // expect
+            expect(deleteReservation).toHaveBeenCalledTimes(1);
             expect(err).toBeInstanceOf(Error);
             expect(err.message).toBe('line id is null');
         }
