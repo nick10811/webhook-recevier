@@ -39,16 +39,17 @@ export class CalEventController implements ICalEventController {
     }
 
     private async bookingCreated(bookingObj: BookingObj) {
-        const hasLineID = this._srv.booking.hasLineID(bookingObj);
-        if (!hasLineID) {
-            console.error('line id is null');
-            return Promise.reject(new Error('line id is null'));
-        }
-        
+        // update Google Sheet
         const err = await this._srv.sheets.appendReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to append reservation to sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to append reservation to sheet: ${err.message}`));
+        }
+
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
+            return Promise.reject(new Error('line id is null'));
         }
 
         return this._srv.line.pushMessage({
@@ -58,16 +59,17 @@ export class CalEventController implements ICalEventController {
     }
 
     private async bookingRescheduled(bookingObj: BookingObj) {
-        const hasLineID = this._srv.booking.hasLineID(bookingObj);
-        if (!hasLineID) {
-            console.error('line id is null');
-            return Promise.reject(new Error('line id is null'));
-        }
-
+        // update Google Sheet
         const err = await this._srv.sheets.updateReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to update reservation to sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to update reservation to sheet: ${err.message}`));
+        }
+
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
+            return Promise.reject(new Error('line id is null'));
         }
 
         return this._srv.line.pushMessage({
@@ -77,16 +79,17 @@ export class CalEventController implements ICalEventController {
     }
 
     private async bookingCancelled(bookingObj: BookingObj): Promise<PushMessageResponse | undefined> {
-        const hasLineID = this._srv.booking.hasLineID(bookingObj);
-        if (!hasLineID) {
-            console.error('line id is null');
-            return Promise.reject(new Error('line id is null'));
-        }
-
+        // update Google Sheet
         const err = await this._srv.sheets.deleteReservation(bookingObj);
         if (err instanceof Error) {
             console.error(`failed to delete reservation from sheet: ${err.message}`);
             return Promise.reject(new Error(`failed to delete reservation from sheet: ${err.message}`));
+        }
+
+        const hasLineID = this._srv.booking.hasLineID(bookingObj);
+        if (!hasLineID) {
+            console.error('line id is null');
+            return Promise.reject(new Error('line id is null'));
         }
 
         return this._srv.line.pushMessage({
